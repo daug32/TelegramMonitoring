@@ -1,7 +1,7 @@
 # TelegramMonitoring
 
-Provides background service that asks configured monitorings and sends their messages to specified Telegram chats.
-This requires monitorings to have a GET api endpoint that returns a string 
+Provides a background service that forwards a message from monitoring to Telegram chat.
+This requires monitorings to have a GET api endpoint that returns a string.
 
 ## Configurating
 ### Configure scheduler 
