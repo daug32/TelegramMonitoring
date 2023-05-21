@@ -5,7 +5,6 @@ namespace MonitoringScheduler;
 
 public class MonitoringScheduler : BackgroundService
 {
-    private readonly TimeSpan _delay;
     private readonly IConfiguration _configuration;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
@@ -17,7 +16,6 @@ public class MonitoringScheduler : BackgroundService
     {
         _configuration = configuration;
         _serviceScopeFactory = serviceScopeFactory;
-        _delay = ParseDelay();
     }
 
     protected override async Task ExecuteAsync( CancellationToken cancellationToken )
@@ -27,11 +25,11 @@ public class MonitoringScheduler : BackgroundService
             
         while ( !cancellationToken.IsCancellationRequested )
         {
-            Task delay = Task.Delay( _delay, cancellationToken );
+            Task delay = Task.Delay( ParseDelay(), cancellationToken );
             
             await NotifyProjectsAsync();
             
-            delay.Wait( cancellationToken );
+            await delay.WaitAsync( cancellationToken );
         }
     }
 

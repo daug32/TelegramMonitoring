@@ -1,5 +1,8 @@
-﻿using MonitoringScheduler.Configurations;
+﻿using System.Runtime.CompilerServices;
+using MonitoringScheduler.Configurations;
 using MonitoringScheduler.Services.Builders;
+
+[assembly: InternalsVisibleTo( "MonitoringScheduler.Tests" )]
 
 namespace MonitoringScheduler.Services.Implementation;
 
@@ -56,6 +59,6 @@ internal class SynchronizerService : ISynchronizerService
 
     private static string BuildRequestErrorMessage( string projectName )
     {
-        return $"Application: \"{projectName}\". An error occured while tried to get message.";
+        return $"Application: \"{projectName}\". Couldn't get message from application.";
     }
 }

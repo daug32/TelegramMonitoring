@@ -1,4 +1,7 @@
-﻿using MonitoringScheduler.Configurations;
+﻿using System.Runtime.CompilerServices;
+using MonitoringScheduler.Configurations;
+
+[assembly: InternalsVisibleTo( "MonitoringScheduler.Tests" )]
 
 namespace MonitoringScheduler.Services.Implementation;
 
@@ -18,7 +21,10 @@ internal class ProjectMonitoring : IProjectMonitoring
     public async Task<string> GetMessageFromProjectAsync()
     {
         var request = new HttpRequestMessage( HttpMethod.Get, _configuration.Url );
-        request.Headers.Add( _configuration.AuthenticationTokenHeader, _configuration.AuthenticationToken );
+        if ( !String.IsNullOrWhiteSpace( _configuration.AuthenticationTokenHeader ) )
+        {
+            request.Headers.Add( _configuration.AuthenticationTokenHeader, _configuration.AuthenticationToken );
+        }
 
         HttpResponseMessage response = await _httpClient.SendAsync( request );
         string result = await response.Content.ReadAsStringAsync();
