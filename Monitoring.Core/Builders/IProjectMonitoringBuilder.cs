@@ -1,6 +1,7 @@
-﻿using MonitoringScheduler.Configurations;
+﻿using Monitoring.Core.Configurations;
+using Monitoring.Core.Services;
 
-namespace MonitoringScheduler.Services.Builders;
+namespace Monitoring.Core.Builders;
 
 public interface IProjectMonitoringBuilder
 {

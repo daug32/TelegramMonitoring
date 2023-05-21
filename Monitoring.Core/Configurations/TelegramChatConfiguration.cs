@@ -1,4 +1,4 @@
-﻿namespace MonitoringScheduler.Configurations;
+﻿namespace Monitoring.Core.Configurations;
 
 public class TelegramChatConfiguration
 {

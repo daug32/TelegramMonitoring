@@ -1,4 +1,4 @@
-namespace MonitoringScheduler;
+namespace Monitoring.BackgroundService;
 
 public class Program
 {
@@ -14,7 +14,7 @@ public class Program
             .ConfigureServices( (hostContext, services) =>
             {
                 services
-                    .ConfigureDependencies( hostContext.Configuration )
+                    .ConfigureDependencies()
                     .AddHostedService<MonitoringScheduler>();
             } );
     }

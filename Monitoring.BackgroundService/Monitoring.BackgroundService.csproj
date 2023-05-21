@@ -9,10 +9,13 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
-        <PackageReference Include="Telegram.Bot" Version="19.0.0-preview.2" />
     </ItemGroup>
 
     <ItemGroup>
         <None Include="appsettings.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Monitoring.Core\Monitoring.Core.csproj" />
     </ItemGroup>
 </Project>

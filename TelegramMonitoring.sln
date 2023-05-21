@@ -1,6 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitoringScheduler", "MonitoringScheduler\MonitoringScheduler.csproj", "{4A617539-C43A-420F-8B60-BFB192ED4D6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitoring.BackgroundService", "Monitoring.BackgroundService\Monitoring.BackgroundService.csproj", "{4A617539-C43A-420F-8B60-BFB192ED4D6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitoring.Tests", "Monitoring.Tests\Monitoring.Tests.csproj", "{BF1AA8DA-7DFD-4501-80D1-9F9C29E1C8F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitoring.Core", "Monitoring.Core\Monitoring.Core.csproj", "{DEABD2D1-1409-48F2-8BFE-D4C83ED70D68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,6 +16,14 @@ Global
 		{4A617539-C43A-420F-8B60-BFB192ED4D6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A617539-C43A-420F-8B60-BFB192ED4D6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A617539-C43A-420F-8B60-BFB192ED4D6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF1AA8DA-7DFD-4501-80D1-9F9C29E1C8F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF1AA8DA-7DFD-4501-80D1-9F9C29E1C8F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF1AA8DA-7DFD-4501-80D1-9F9C29E1C8F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF1AA8DA-7DFD-4501-80D1-9F9C29E1C8F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEABD2D1-1409-48F2-8BFE-D4C83ED70D68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEABD2D1-1409-48F2-8BFE-D4C83ED70D68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEABD2D1-1409-48F2-8BFE-D4C83ED70D68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEABD2D1-1409-48F2-8BFE-D4C83ED70D68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

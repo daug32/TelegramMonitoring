@@ -14,13 +14,6 @@ You can edit scheduling delay in [appsettings.json](https://github.com/daug32/Te
 }
 ```
 
-### Configure bot settings
-```JSON
-{
-  "TelegramBotApiKey": ""
-}
-```
-
 ### Configure projects
 Add your settings.
 Project model is [here](https://github.com/daug32/TelegramMonitoring/blob/main/MonitoringScheduler/Configurations/ProjectConfiguration.cs)
@@ -29,6 +22,9 @@ Project model is [here](https://github.com/daug32/TelegramMonitoring/blob/main/M
   "ProjectConfigurations": [
     {
       "ProjectName": "Test project name",
+      "TelegramBotConfiguration": {
+        "ApiKey": ""
+      },
       "TelegramChatConfiguration": {
         "ChatId": -1000000000000
       },
