@@ -2,6 +2,7 @@
 using Monitoring.Core.Configurations;
 using Monitoring.Core.Services;
 using Monitoring.Core.Services.Implementation;
+using Monitoring.Core.Validators;
 using Moq;
 using NUnit.Framework;
 
@@ -44,7 +45,8 @@ public class SynchronizerServiceTests
         // SynchronizerService
         _synchronizerService = new SynchronizerService(
             projectMonitoringBuilderMock.Object,
-            telegramHandlerBuilderMoq.Object );
+            telegramHandlerBuilderMoq.Object,
+            new Mock<IValidator<ProjectConfiguration>>().Object );
     }
 
     [Test]

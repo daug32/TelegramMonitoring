@@ -1,22 +1,23 @@
-﻿using System.Runtime.CompilerServices;
-using Monitoring.Core.Builders;
+﻿using Monitoring.Core.Builders;
 using Monitoring.Core.Configurations;
-
-[assembly: InternalsVisibleTo( "Monitoring.Tests" )]
+using Monitoring.Core.Validators;
 
 namespace Monitoring.Core.Services.Implementation;
 
 internal class SynchronizerService : ISynchronizerService
 {
+    private readonly IValidator<ProjectConfiguration> _projectConfigurationValidator;
     private readonly IProjectMonitoringBuilder _projectMonitoringBuilder;
     private readonly ITelegramHandlerBuilder _telegramHandlerBuilder;
 
     public SynchronizerService(
         IProjectMonitoringBuilder projectMonitoringBuilder,
-        ITelegramHandlerBuilder telegramHandlerBuilder )
+        ITelegramHandlerBuilder telegramHandlerBuilder,
+        IValidator<ProjectConfiguration> projectConfigurationValidator )
     {
         _projectMonitoringBuilder = projectMonitoringBuilder;
         _telegramHandlerBuilder = telegramHandlerBuilder;
+        _projectConfigurationValidator = projectConfigurationValidator;
     }
 
     public async Task NotifyAllProjectsAsync( IEnumerable<ProjectConfiguration> projects )
@@ -29,6 +30,8 @@ internal class SynchronizerService : ISynchronizerService
 
     public async Task NotifySingleProjectAsync( ProjectConfiguration project )
     {
+        _projectConfigurationValidator.ValidateOrThrow( project );
+
         ITelegramHandler telegramHandler = _telegramHandlerBuilder.Build(
             project.TelegramBotConfiguration,
             project.TelegramChatConfiguration );
