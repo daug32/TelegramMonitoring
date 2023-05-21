@@ -1,10 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
-using MonitoringScheduler.Configurations;
-using MonitoringScheduler.Services.Builders;
+using Monitoring.Core.Builders;
+using Monitoring.Core.Configurations;
 
-[assembly: InternalsVisibleTo( "MonitoringScheduler.Tests" )]
+[assembly: InternalsVisibleTo( "Monitoring.Tests" )]
 
-namespace MonitoringScheduler.Services.Implementation;
+namespace Monitoring.Core.Services.Implementation;
 
 internal class SynchronizerService : ISynchronizerService
 {
@@ -19,28 +19,30 @@ internal class SynchronizerService : ISynchronizerService
         _telegramHandlerBuilder = telegramHandlerBuilder;
     }
 
-    public async Task NotifyAllProjectsAsync( List<ProjectConfiguration> configurations )
+    public async Task NotifyAllProjectsAsync( IEnumerable<ProjectConfiguration> projects )
     {
-        foreach ( ProjectConfiguration configuration in configurations )
+        foreach ( ProjectConfiguration project in projects )
         {
-            await NotifySingleProjectAsync( configuration );
+            await NotifySingleProjectAsync( project );
         }
     }
 
-    public async Task NotifySingleProjectAsync( ProjectConfiguration configuration )
+    public async Task NotifySingleProjectAsync( ProjectConfiguration project )
     {
-        ITelegramHandler telegramHandler = _telegramHandlerBuilder.Build( configuration.TelegramChatConfiguration );
+        ITelegramHandler telegramHandler = _telegramHandlerBuilder.Build(
+            project.TelegramBotConfiguration,
+            project.TelegramChatConfiguration );
 
         string message;
         try
         {
             message = await _projectMonitoringBuilder
-                .Build( configuration.MonitoringConfiguration )
+                .Build( project.MonitoringConfiguration )
                 .GetMessageFromProjectAsync();
         }
         catch ( HttpRequestException )
         {
-            await telegramHandler.SendMessageAsync( BuildRequestErrorMessage( configuration.ProjectName ) );
+            await telegramHandler.SendMessageAsync( BuildRequestErrorMessage( project.ProjectName ) );
             return;
         }
 
@@ -49,7 +51,7 @@ internal class SynchronizerService : ISynchronizerService
             return;
         }
 
-        await telegramHandler.SendMessageAsync( BuildMessage( configuration.ProjectName, message ) );
+        await telegramHandler.SendMessageAsync( BuildMessage( project.ProjectName, message ) );
     }
 
     private static string BuildMessage( string projectName, string message )

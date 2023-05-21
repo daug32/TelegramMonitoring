@@ -1,7 +1,9 @@
-﻿using MonitoringScheduler.Configurations;
-using MonitoringScheduler.Services.Implementation;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Monitoring.Core.Configurations;
+using Monitoring.Core.Services;
+using Monitoring.Core.Services.Implementation;
 
-namespace MonitoringScheduler.Services.Builders.Implementation;
+namespace Monitoring.Core.Builders.Implementation;
 
 internal class ProjectMonitoringBuilder : IProjectMonitoringBuilder
 {

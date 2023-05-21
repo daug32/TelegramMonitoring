@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MonitoringScheduler\MonitoringScheduler.csproj" />
+      <ProjectReference Include="..\Monitoring.BackgroundService\Monitoring.BackgroundService.csproj" />
     </ItemGroup>
 
 </Project>

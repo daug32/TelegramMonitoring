@@ -1,4 +1,4 @@
-﻿namespace MonitoringScheduler.Services;
+﻿namespace Monitoring.Core.Services;
 
 public interface ITelegramHandler
 {

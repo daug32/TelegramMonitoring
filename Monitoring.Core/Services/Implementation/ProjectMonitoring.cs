@@ -1,9 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
-using MonitoringScheduler.Configurations;
+using Monitoring.Core.Configurations;
 
-[assembly: InternalsVisibleTo( "MonitoringScheduler.Tests" )]
+[assembly: InternalsVisibleTo( "Monitoring.Tests" )]
 
-namespace MonitoringScheduler.Services.Implementation;
+namespace Monitoring.Core.Services.Implementation;
 
 internal class ProjectMonitoring : IProjectMonitoring
 {

@@ -1,11 +1,11 @@
-﻿using MonitoringScheduler.Configurations;
-using MonitoringScheduler.Services;
-using MonitoringScheduler.Services.Builders;
-using MonitoringScheduler.Services.Implementation;
+﻿using Monitoring.Core.Builders;
+using Monitoring.Core.Configurations;
+using Monitoring.Core.Services;
+using Monitoring.Core.Services.Implementation;
 using Moq;
 using NUnit.Framework;
 
-namespace MonitoringScheduler.Tests;
+namespace Monitoring.Tests;
 
 public class SynchronizerServiceTests
 {
@@ -36,7 +36,9 @@ public class SynchronizerServiceTests
 
         var telegramHandlerBuilderMoq = new Mock<ITelegramHandlerBuilder>();
         telegramHandlerBuilderMoq
-            .Setup( builder => builder.Build( It.IsAny<TelegramChatConfiguration>() ) )
+            .Setup( builder => builder.Build(
+                It.IsAny<TelegramBotConfiguration>(),
+                It.IsAny<TelegramChatConfiguration>() ) )
             .Returns( telegramHandlerMock.Object );
 
         // SynchronizerService

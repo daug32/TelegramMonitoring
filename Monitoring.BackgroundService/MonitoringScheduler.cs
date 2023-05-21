@@ -1,9 +1,9 @@
-﻿using MonitoringScheduler.Configurations;
-using MonitoringScheduler.Services;
+﻿using Monitoring.Core.Configurations;
+using Monitoring.Core.Services;
 
-namespace MonitoringScheduler;
+namespace Monitoring.BackgroundService;
 
-public class MonitoringScheduler : BackgroundService
+public class MonitoringScheduler : Microsoft.Extensions.Hosting.BackgroundService
 {
     private readonly IConfiguration _configuration;
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -20,6 +20,8 @@ public class MonitoringScheduler : BackgroundService
 
     protected override async Task ExecuteAsync( CancellationToken cancellationToken )
     {
+        // Due to Monitoring.BackgroundService is a singleton service and ISynchronizerService is a scoped class
+        // We need to get in code
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
         _synchronizerService = scope.ServiceProvider.GetRequiredService<ISynchronizerService>();
             
@@ -35,7 +37,7 @@ public class MonitoringScheduler : BackgroundService
 
     private Task NotifyProjectsAsync()
     {
-        var projectConfigurations = _configuration
+        List<ProjectConfiguration> projectConfigurations = _configuration
             .GetSection( "ProjectConfigurations" )
             .Get<List<ProjectConfiguration>>();
 

@@ -1,7 +1,7 @@
-﻿using MonitoringScheduler.Configurations;
+﻿using Monitoring.Core.Configurations;
 using Telegram.Bot;
 
-namespace MonitoringScheduler.Services.Implementation;
+namespace Monitoring.Core.Services.Implementation;
 
 internal class TelegramHandler : ITelegramHandler
 {
@@ -10,12 +10,12 @@ internal class TelegramHandler : ITelegramHandler
     private readonly TelegramChatConfiguration _chatConfiguration;
 
     public TelegramHandler(
-        string apiKey,
+        string botApiKey,
         TelegramChatConfiguration chatConfiguration,
         HttpClient httpClient )
     {
         _chatConfiguration = chatConfiguration;
-        _telegramClient = new TelegramBotClient( apiKey, httpClient );
+        _telegramClient = new TelegramBotClient( botApiKey, httpClient );
     }
 
     public async Task SendMessageAsync( string message )
