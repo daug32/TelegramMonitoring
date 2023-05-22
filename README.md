@@ -5,7 +5,7 @@ This requires monitorings to have a GET api endpoint that returns a string.
 
 ## Configurating
 ### Configure scheduler 
-You can edit scheduling delay in [appsettings.json](https://github.com/daug32/TelegramMonitoring/blob/main/MonitoringScheduler/appsettings.json): 
+You can edit scheduling delay in [appsettings.json](https://github.com/daug32/TelegramMonitoring/blob/main/Monitoring.BackgroundService/appsettings.json): 
 ```JSON
 {
   "Scheduling": {
@@ -16,7 +16,7 @@ You can edit scheduling delay in [appsettings.json](https://github.com/daug32/Te
 
 ### Configure projects
 Add your settings.
-Project model is [here](https://github.com/daug32/TelegramMonitoring/blob/main/MonitoringScheduler/Configurations/ProjectConfiguration.cs)
+Project model is [here](https://github.com/daug32/TelegramMonitoring/blob/main/Monitoring.Core/Configurations/ProjectConfiguration.cs)
 ```JSON
 {
   "ProjectConfigurations": [
