@@ -49,7 +49,8 @@ internal class SynchronizerService : ISynchronizerService
             return;
         }
 
-        if ( string.IsNullOrWhiteSpace( message ) )
+        if ( string.IsNullOrWhiteSpace( message )
+            && !project.NotifyIfMonitoringReturnedEmptyMessage )
         {
             return;
         }

@@ -4,12 +4,12 @@ Provides a background service that forwards a message from monitoring to Telegra
 This requires monitorings to have a GET api endpoint that returns a string.
 
 ## Configurating
-### Configure scheduler 
-You can edit scheduling delay in [appsettings.json](https://github.com/daug32/TelegramMonitoring/blob/main/Monitoring.BackgroundService/appsettings.json): 
+### Configure scheduler
+You can edit scheduling delay in [appsettings.json](https://github.com/daug32/TelegramMonitoring/blob/main/MonitoringScheduler/appsettings.json): 
 ```JSON
 {
   "Scheduling": {
-    "DelayInMinutes": 60
+    "Delay": "1:00:00"
   }
 }
 ```
@@ -22,8 +22,9 @@ Project model is [here](https://github.com/daug32/TelegramMonitoring/blob/main/M
   "ProjectConfigurations": [
     {
       "ProjectName": "Test project name",
+      "NotifyIfMonitoringReturnedEmptyMessage": false,
       "TelegramBotConfiguration": {
-        "ApiKey": ""
+        "ApiKey": "0000000000:AAAAAAAAAAAAAAA_AAAAAAA_AAAAAAAAAAA"
       },
       "TelegramChatConfiguration": {
         "ChatId": -1000000000000

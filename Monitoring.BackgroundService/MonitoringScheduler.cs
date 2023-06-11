@@ -21,7 +21,7 @@ public class MonitoringScheduler : Microsoft.Extensions.Hosting.BackgroundServic
     protected override async Task ExecuteAsync( CancellationToken cancellationToken )
     {
         // Due to Monitoring.BackgroundService is a singleton service and ISynchronizerService is a scoped class
-        // We need to get in code
+        // We need to get ISynchronizerService in code
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
         _synchronizerService = scope.ServiceProvider.GetRequiredService<ISynchronizerService>();
             
@@ -46,10 +46,10 @@ public class MonitoringScheduler : Microsoft.Extensions.Hosting.BackgroundServic
 
     private TimeSpan ParseDelay()
     {
-        var minutes = _configuration
-            .GetSection( "Scheduling:DelayInMinutes" )
-            .Get<int>();
+        var delay = _configuration
+            .GetSection( "Scheduling:Delay" )
+            .Get<TimeSpan>();
 
-        return new TimeSpan( 0, minutes, 0 );
+        return delay;
     }
 }

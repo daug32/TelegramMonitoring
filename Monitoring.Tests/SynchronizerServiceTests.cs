@@ -71,12 +71,13 @@ public class SynchronizerServiceTests
     }
 
     [Test]
-    public void NotifySingleProjectAsync_MonitoringReturnedEmptyMessage_NoMessageIsSentToTelegram()
+    public void NotifySingleProjectAsync_MonitoringReturnedEmptyMessageAndProjectConfiguredToSendMessagesInThisCase_MessageIsSent()
     {
         // Arrange
         var config = new ProjectConfiguration
         {
             ProjectName = "Test project",
+            NotifyIfMonitoringReturnedEmptyMessage = true,
             MonitoringConfiguration = new MonitoringConfiguration(),
             TelegramChatConfiguration = new TelegramChatConfiguration()
         };
@@ -87,6 +88,27 @@ public class SynchronizerServiceTests
         _synchronizerService.NotifySingleProjectAsync( config ).Wait();
 
         // Assert
-        Assert.IsTrue( String.IsNullOrEmpty( _monitoringMessage ) );
+        Assert.IsFalse( String.IsNullOrEmpty( _sentMessage ) );
+    }
+
+    [Test]
+    public void NotifySingleProjectAsync_MonitoringReturnedEmptyMessageAndProjectConfiguredToNotSendMessagesInThisCase_NoMessageIsSent()
+    {
+        // Arrange
+        var config = new ProjectConfiguration
+        {
+            ProjectName = "Test project",
+            NotifyIfMonitoringReturnedEmptyMessage = false,
+            MonitoringConfiguration = new MonitoringConfiguration(),
+            TelegramChatConfiguration = new TelegramChatConfiguration()
+        };
+
+        _monitoringMessage = "";
+
+        // Act
+        _synchronizerService.NotifySingleProjectAsync( config ).Wait();
+
+        // Assert
+        Assert.IsTrue( String.IsNullOrEmpty( _sentMessage ) );
     }
 }
