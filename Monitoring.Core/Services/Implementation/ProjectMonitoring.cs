@@ -1,7 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Monitoring.Core.Configurations;
-
-[assembly: InternalsVisibleTo( "Monitoring.Tests" )]
+﻿using Monitoring.Core.Configurations;
 
 namespace Monitoring.Core.Services.Implementation;
 
