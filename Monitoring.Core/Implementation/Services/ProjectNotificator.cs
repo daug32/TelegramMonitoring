@@ -26,30 +26,6 @@ namespace Monitoring.Core.Implementation.Services
             _projectConfigurationValidator = projectConfigurationValidator;
         }
 
-        public Task NotifyAllProjectsAsync( IEnumerable<ProjectConfiguration> projects )
-        {
-            return NotifyAllProjectsAsync( projects, CancellationToken.None );
-        }
-
-        public Task NotifyAllProjectsAsync(
-            IEnumerable<ProjectConfiguration> projects,
-            CancellationToken cancellationToken )
-        {
-            Task[] tasks = projects
-                .Select( project => Task.Run(
-                () =>
-                {
-                    Task notificationTask = NotifyProjectAsync( project, cancellationToken );
-                    Task waitTask = Task.Delay( project.Delay, cancellationToken );
-
-                    return Task.WhenAll( notificationTask, waitTask );
-                },
-                cancellationToken ) )
-                .ToArray(); // Task.WhenAll works more effectively with arrays 
-
-            return Task.WhenAll( tasks );
-        }
-
         public Task NotifyProjectAsync( ProjectConfiguration project )
         {
             return NotifyProjectAsync( project, CancellationToken.None );

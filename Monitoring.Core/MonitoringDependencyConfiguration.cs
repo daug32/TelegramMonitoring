@@ -12,6 +12,7 @@ namespace Monitoring.Core
         {
             // Services
             services.AddScoped<IProjectNotificator, ProjectNotificator>();
+            services.AddScoped<IProjectNotificatorScheduler, ProjectNotificatorScheduler>();
 
             // Builders
             services.AddScoped<IProjectMonitoringBuilder, ProjectMonitoringBuilder>();

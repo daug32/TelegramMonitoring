@@ -1,5 +1,7 @@
-﻿using Monitoring.Core;
+﻿using System.Collections.Concurrent;
+using Monitoring.Core;
 using Monitoring.Core.Configurations;
+using Monitoring.Core.Implementation;
 
 namespace Monitoring.BackgroundService;
 
@@ -7,8 +9,6 @@ public class MonitoringScheduler : Microsoft.Extensions.Hosting.BackgroundServic
 {
     private readonly IConfiguration _configuration;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    private IProjectNotificator _projectNotificator;
 
     public MonitoringScheduler(
         IConfiguration configuration,
@@ -23,15 +23,10 @@ public class MonitoringScheduler : Microsoft.Extensions.Hosting.BackgroundServic
         // Due to Monitoring.BackgroundService is a singleton service and ISynchronizerService is a scoped class
         // We need to get ISynchronizerService in code
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
-        _projectNotificator = scope.ServiceProvider.GetRequiredService<IProjectNotificator>();
-
-        while ( !cancellationToken.IsCancellationRequested )
-        {
-            IEnumerable<ProjectConfiguration> configurations = GetProjectConfigurations();
-            await _projectNotificator.NotifyAllProjectsAsync( 
-                configurations,
-                cancellationToken );
-        }
+        var notificator = scope.ServiceProvider.GetRequiredService<IProjectNotificatorScheduler>();
+        
+        IEnumerable<ProjectConfiguration> projects = GetProjectConfigurations();
+        await notificator.ScheduleNotificationAsync( projects, cancellationToken );
     }
 
     private IEnumerable<ProjectConfiguration> GetProjectConfigurations()
