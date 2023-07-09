@@ -46,9 +46,12 @@ namespace Monitoring.Core.Services.Implementation
                     .Build( project.MonitoringConfiguration )
                     .GetMessageFromProjectAsync();
             }
-            catch ( HttpRequestException )
+            catch ( HttpRequestException ex )
             {
-                await telegramHandler.SendMessageAsync( BuildRequestErrorMessage( project.ProjectName ) );
+                string errorMessage = BuildRequestErrorMessage( 
+                    project.ProjectName,
+                    ex.Message );
+                await telegramHandler.SendMessageAsync( errorMessage );
                 return;
             }
 
@@ -66,9 +69,10 @@ namespace Monitoring.Core.Services.Implementation
             return $"Application: \"{projectName}\". Message:\n{message}";
         }
 
-        private static string BuildRequestErrorMessage( string projectName )
+        private static string BuildRequestErrorMessage( string projectName, string exceptionMessage )
         {
-            return $"Application: \"{projectName}\". Couldn't get message from application.";
+            return 
+                $"Application: \"{projectName}\". Couldn't get message from application. Message:\n{exceptionMessage}";
         }
     }
 }
