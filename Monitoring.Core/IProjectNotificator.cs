@@ -4,9 +4,9 @@ using Monitoring.Core.Configurations;
 
 namespace Monitoring.Core
 {
-    public interface ISynchronizerService
+    public interface IProjectNotificator
     {
-        Task NotifySingleProjectAsync( ProjectConfiguration project );
         Task NotifyAllProjectsAsync( IEnumerable<ProjectConfiguration> projects );
+        Task NotifyProjectAsync( ProjectConfiguration project );
     }
 }

@@ -8,13 +8,13 @@ using Monitoring.Core.Implementation.Validators;
 
 namespace Monitoring.Core.Implementation.Services
 {
-    internal class SynchronizerService : ISynchronizerService
+    internal class ProjectNotificator : IProjectNotificator
     {
         private readonly IValidator<ProjectConfiguration> _projectConfigurationValidator;
         private readonly IProjectMonitoringBuilder _projectMonitoringBuilder;
         private readonly ITelegramHandlerBuilder _telegramHandlerBuilder;
 
-        public SynchronizerService(
+        public ProjectNotificator(
             IProjectMonitoringBuilder projectMonitoringBuilder,
             ITelegramHandlerBuilder telegramHandlerBuilder,
             IValidator<ProjectConfiguration> projectConfigurationValidator )
@@ -29,7 +29,7 @@ namespace Monitoring.Core.Implementation.Services
             Task[] tasks = projects
                 .Select( project => Task.Run( () =>
                 {
-                    Task notificationTask = NotifySingleProjectAsync( project );
+                    Task notificationTask = NotifyProjectAsync( project );
                     Task waitTask = Task.Delay( project.Delay );
 
                     return Task.WhenAll( notificationTask, waitTask );
@@ -39,7 +39,7 @@ namespace Monitoring.Core.Implementation.Services
             return Task.WhenAll( tasks );
         }
 
-        public async Task NotifySingleProjectAsync( ProjectConfiguration project )
+        public async Task NotifyProjectAsync( ProjectConfiguration project )
         {
             _projectConfigurationValidator.ValidateOrThrow( project );
 

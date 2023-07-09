@@ -8,7 +8,7 @@ public class MonitoringScheduler : Microsoft.Extensions.Hosting.BackgroundServic
     private readonly IConfiguration _configuration;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    private ISynchronizerService _synchronizerService;
+    private IProjectNotificator _projectNotificator;
 
     public MonitoringScheduler(
         IConfiguration configuration,
@@ -23,7 +23,7 @@ public class MonitoringScheduler : Microsoft.Extensions.Hosting.BackgroundServic
         // Due to Monitoring.BackgroundService is a singleton service and ISynchronizerService is a scoped class
         // We need to get ISynchronizerService in code
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
-        _synchronizerService = scope.ServiceProvider.GetRequiredService<ISynchronizerService>();
+        _projectNotificator = scope.ServiceProvider.GetRequiredService<IProjectNotificator>();
 
         while ( !cancellationToken.IsCancellationRequested )
         {
@@ -37,6 +37,6 @@ public class MonitoringScheduler : Microsoft.Extensions.Hosting.BackgroundServic
             .GetSection( "ProjectConfigurations" )
             .Get<List<ProjectConfiguration>>();
 
-        return _synchronizerService.NotifyAllProjectsAsync( projectConfigurations );
+        return _projectNotificator.NotifyAllProjectsAsync( projectConfigurations );
     }
 }

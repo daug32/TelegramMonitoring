@@ -11,7 +11,7 @@ namespace Monitoring.Core
         public static IServiceCollection AddMonitoring( this IServiceCollection services )
         {
             // Services
-            services.AddScoped<ISynchronizerService, SynchronizerService>();
+            services.AddScoped<IProjectNotificator, ProjectNotificator>();
 
             // Builders
             services.AddScoped<IProjectMonitoringBuilder, ProjectMonitoringBuilder>();

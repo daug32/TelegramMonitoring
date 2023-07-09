@@ -8,7 +8,7 @@ namespace Monitoring.Core.Configurations
 
         /// <summary>
         ///     If true, sends a message that the monitoring returned an empty message.
-        ///     If false, no message is sent in these cases.
+        ///     If false, no message is sent in these case.
         /// </summary>
         public bool NotifyIfMonitoringReturnedEmptyMessage { get; set; } = false;
 

@@ -7,11 +7,11 @@ using NUnit.Framework;
 
 namespace Monitoring.Tests;
 
-public class SynchronizerServiceTests
+public class ProjectNotificatorTests
 {
     private string _monitoringMessage;
     private string _sentMessage;
-    private SynchronizerService _synchronizerService;
+    private ProjectNotificator _projectNotificator;
 
     [SetUp]
     public void SetUp()
@@ -41,15 +41,15 @@ public class SynchronizerServiceTests
                 It.IsAny<TelegramChatConfiguration>() ) )
             .Returns( telegramHandlerMock.Object );
 
-        // SynchronizerService
-        _synchronizerService = new SynchronizerService(
+        // ProjectNotificator
+        _projectNotificator = new ProjectNotificator(
             projectMonitoringBuilderMock.Object,
             telegramHandlerBuilderMoq.Object,
             new Mock<IValidator<ProjectConfiguration>>().Object );
     }
 
     [Test]
-    public void NotifySingleProjectAsync_MonitoringReturnedNotEmptyMessage_MessageIsSentToTelegram()
+    public async Task NotifySingleProjectAsync_MonitoringReturnedNotEmptyMessage_MessageIsSentToTelegram()
     {
         // Arrange
         var config = new ProjectConfiguration
@@ -62,7 +62,7 @@ public class SynchronizerServiceTests
         _monitoringMessage = "Success";
 
         // Act
-        _synchronizerService.NotifySingleProjectAsync( config ).Wait();
+        await _projectNotificator.NotifyProjectAsync( config );
 
         // Assert
         Assert.IsTrue( _sentMessage.Contains( config.ProjectName ) );
@@ -70,7 +70,7 @@ public class SynchronizerServiceTests
     }
 
     [Test]
-    public void NotifySingleProjectAsync_MonitoringReturnedEmptyMessageAndProjectConfiguredToSendMessagesInThisCase_MessageIsSent()
+    public async Task NotifySingleProjectAsync_MonitoringReturnedEmptyMessageAndProjectConfiguredToSendMessagesInThisCase_MessageIsSent()
     {
         // Arrange
         var config = new ProjectConfiguration
@@ -84,14 +84,14 @@ public class SynchronizerServiceTests
         _monitoringMessage = "";
 
         // Act
-        _synchronizerService.NotifySingleProjectAsync( config ).Wait();
+        await _projectNotificator.NotifyProjectAsync( config );
 
         // Assert
         Assert.IsFalse( String.IsNullOrEmpty( _sentMessage ) );
     }
 
     [Test]
-    public void NotifySingleProjectAsync_MonitoringReturnedEmptyMessageAndProjectConfiguredToNotSendMessagesInThisCase_NoMessageIsSent()
+    public async Task NotifySingleProjectAsync_MonitoringReturnedEmptyMessageAndProjectConfiguredToNotSendMessagesInThisCase_NoMessageIsSent()
     {
         // Arrange
         var config = new ProjectConfiguration
@@ -105,7 +105,7 @@ public class SynchronizerServiceTests
         _monitoringMessage = "";
 
         // Act
-        _synchronizerService.NotifySingleProjectAsync( config ).Wait();
+        await _projectNotificator.NotifyProjectAsync( config );
 
         // Assert
         Assert.IsTrue( String.IsNullOrEmpty( _sentMessage ) );
