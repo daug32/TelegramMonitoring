@@ -1,4 +1,6 @@
-﻿namespace Monitoring.Core.Configurations
+﻿using System;
+
+namespace Monitoring.Core.Configurations
 {
     public class ProjectConfiguration
     {
@@ -10,10 +12,12 @@
         /// </summary>
         public bool NotifyIfMonitoringReturnedEmptyMessage { get; set; } = false;
 
+        public TimeSpan Delay { get; set; }
+
         public TelegramBotConfiguration TelegramBotConfiguration { get; set; }
 
         public TelegramChatConfiguration TelegramChatConfiguration { get; set; }
 
-        public MonitoringConfiguration MonitoringConfiguration { get; set; }
+        public AppMonitoringConfiguration AppMonitoringConfiguration { get; set; }
     }
 }

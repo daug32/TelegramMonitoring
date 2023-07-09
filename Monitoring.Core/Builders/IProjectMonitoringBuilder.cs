@@ -5,6 +5,6 @@ namespace Monitoring.Core.Builders
 {
     public interface IProjectMonitoringBuilder
     {
-        IProjectMonitoring Build( MonitoringConfiguration configuration );
+        IProjectMonitoring Build( AppMonitoringConfiguration configuration );
     }
 }

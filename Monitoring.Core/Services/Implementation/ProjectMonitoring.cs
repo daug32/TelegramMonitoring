@@ -7,12 +7,12 @@ namespace Monitoring.Core.Services.Implementation
 {
     internal class ProjectMonitoring : IProjectMonitoring
     {
-        private readonly MonitoringConfiguration _configuration;
+        private readonly AppMonitoringConfiguration _configuration;
         private readonly HttpClient _httpClient;
 
         public ProjectMonitoring(
             HttpClient httpClient,
-            MonitoringConfiguration configuration )
+            AppMonitoringConfiguration configuration )
         {
             _httpClient = httpClient;
             _configuration = configuration;

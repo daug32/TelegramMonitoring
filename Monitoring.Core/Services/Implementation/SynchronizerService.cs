@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Monitoring.Core.Builders;
@@ -23,12 +24,19 @@ namespace Monitoring.Core.Services.Implementation
             _projectConfigurationValidator = projectConfigurationValidator;
         }
 
-        public async Task NotifyAllProjectsAsync( IEnumerable<ProjectConfiguration> projects )
+        public Task NotifyAllProjectsAsync( IEnumerable<ProjectConfiguration> projects )
         {
-            foreach ( ProjectConfiguration project in projects )
-            {
-                await NotifySingleProjectAsync( project );
-            }
+            Task[] tasks = projects
+                .Select( project => Task.Run( () =>
+                {
+                    Task notificationTask = NotifySingleProjectAsync( project );
+                    Task waitTask = Task.Delay( project.Delay );
+
+                    return Task.WhenAll( notificationTask, waitTask );
+                } ) )
+                .ToArray(); // Task.WhenAll works more effectively with arrays 
+            
+            return Task.WhenAll( tasks );
         }
 
         public async Task NotifySingleProjectAsync( ProjectConfiguration project )
@@ -43,12 +51,12 @@ namespace Monitoring.Core.Services.Implementation
             try
             {
                 message = await _projectMonitoringBuilder
-                    .Build( project.MonitoringConfiguration )
+                    .Build( project.AppMonitoringConfiguration )
                     .GetMessageFromProjectAsync();
             }
             catch ( HttpRequestException ex )
             {
-                string errorMessage = BuildRequestErrorMessage( 
+                string errorMessage = BuildRequestErrorMessage(
                     project.ProjectName,
                     ex.Message );
                 await telegramHandler.SendMessageAsync( errorMessage );
@@ -66,13 +74,13 @@ namespace Monitoring.Core.Services.Implementation
 
         private static string BuildMessage( string projectName, string message )
         {
-            return $"Application: \"{projectName}\". Message:\n{message}";
+            return $"Application: \"{projectName}\".\nMessage: {message}";
         }
 
         private static string BuildRequestErrorMessage( string projectName, string exceptionMessage )
         {
-            return 
-                $"Application: \"{projectName}\". Couldn't get message from application. Message:\n{exceptionMessage}";
+            return
+                $"Application: \"{projectName}\". Couldn't get message from application.\nMessage: {exceptionMessage}";
         }
     }
 }

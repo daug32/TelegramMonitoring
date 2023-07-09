@@ -16,7 +16,7 @@ namespace Monitoring.Core.Builders.Implementation
             _serviceProvider = serviceProvider;
         }
 
-        public IProjectMonitoring Build( MonitoringConfiguration configuration )
+        public IProjectMonitoring Build( AppMonitoringConfiguration configuration )
         {
             var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
             return new ProjectMonitoring( httpClient, configuration );

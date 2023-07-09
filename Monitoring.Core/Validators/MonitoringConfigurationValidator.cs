@@ -3,19 +3,19 @@ using Monitoring.Core.Configurations;
 
 namespace Monitoring.Core.Validators
 {
-    public class MonitoringConfigurationValidator : IValidator<MonitoringConfiguration>
+    public class MonitoringConfigurationValidator : IValidator<AppMonitoringConfiguration>
     {
-        public void ValidateOrThrow( MonitoringConfiguration monitoringConfiguration )
+        public void ValidateOrThrow( AppMonitoringConfiguration config )
         {
-            if ( monitoringConfiguration == null )
+            if ( config == null )
             {
-                throw new ArgumentNullException( nameof( monitoringConfiguration ) );
+                throw new ArgumentNullException( nameof( config ) );
             }
 
-            if ( String.IsNullOrWhiteSpace( monitoringConfiguration.Url ) )
+            if ( String.IsNullOrWhiteSpace( config.Url ) )
             {
                 throw new ArgumentNullException(
-                    nameof( monitoringConfiguration.Url ),
+                    nameof( config.Url ),
                     "Monitoring URL can't be null or empty" );
             }
         }

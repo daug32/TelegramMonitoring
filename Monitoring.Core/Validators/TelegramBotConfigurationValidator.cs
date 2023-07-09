@@ -5,17 +5,17 @@ namespace Monitoring.Core.Validators
 {
     public class TelegramBotConfigurationValidator : IValidator<TelegramBotConfiguration>
     {
-        public void ValidateOrThrow( TelegramBotConfiguration botConfiguration )
+        public void ValidateOrThrow( TelegramBotConfiguration config )
         {
-            if ( botConfiguration == null )
+            if ( config == null )
             {
-                throw new ArgumentNullException( nameof( botConfiguration ) );
+                throw new ArgumentNullException( nameof( config ) );
             }
 
-            if ( String.IsNullOrWhiteSpace( botConfiguration.ApiKey ) )
+            if ( String.IsNullOrWhiteSpace( config.ApiKey ) )
             {
                 throw new ArgumentNullException(
-                    nameof( botConfiguration.ApiKey ),
+                    nameof( config.ApiKey ),
                     "Bot api key can't be null or empty" );
             }
         }

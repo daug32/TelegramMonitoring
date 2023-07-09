@@ -27,29 +27,16 @@ public class MonitoringScheduler : Microsoft.Extensions.Hosting.BackgroundServic
             
         while ( !cancellationToken.IsCancellationRequested )
         {
-            Task delay = Task.Delay( ParseDelay(), cancellationToken );
-            
             await NotifyProjectsAsync();
-            
-            await delay.WaitAsync( cancellationToken );
         }
     }
 
     private Task NotifyProjectsAsync()
     {
-        List<ProjectConfiguration> projectConfigurations = _configuration
+        var projectConfigurations = _configuration
             .GetSection( "ProjectConfigurations" )
             .Get<List<ProjectConfiguration>>();
 
         return _synchronizerService.NotifyAllProjectsAsync( projectConfigurations );
-    }
-
-    private TimeSpan ParseDelay()
-    {
-        var delay = _configuration
-            .GetSection( "Scheduling:Delay" )
-            .Get<TimeSpan>();
-
-        return delay;
     }
 }

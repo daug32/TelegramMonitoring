@@ -21,7 +21,7 @@ namespace Monitoring.Core
 
             // Validators
             services.AddScoped<IValidator<ProjectConfiguration>, ProjectConfigurationValidator>();
-            services.AddScoped<IValidator<MonitoringConfiguration>, MonitoringConfigurationValidator>();
+            services.AddScoped<IValidator<AppMonitoringConfiguration>, MonitoringConfigurationValidator>();
             services.AddScoped<IValidator<TelegramBotConfiguration>, TelegramBotConfigurationValidator>();
 
             return services;

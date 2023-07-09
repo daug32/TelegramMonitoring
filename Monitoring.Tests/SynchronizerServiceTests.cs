@@ -25,7 +25,7 @@ public class SynchronizerServiceTests
 
         var projectMonitoringBuilderMock = new Mock<IProjectMonitoringBuilder>();
         projectMonitoringBuilderMock
-            .Setup( builder => builder.Build( It.IsAny<MonitoringConfiguration>() ) )
+            .Setup( builder => builder.Build( It.IsAny<AppMonitoringConfiguration>() ) )
             .Returns( projectMonitoringMock.Object );
 
         // TelegramHandlerBuilder
@@ -56,7 +56,7 @@ public class SynchronizerServiceTests
         var config = new ProjectConfiguration
         {
             ProjectName = "Test project",
-            MonitoringConfiguration = new MonitoringConfiguration(),
+            AppMonitoringConfiguration = new AppMonitoringConfiguration(),
             TelegramChatConfiguration = new TelegramChatConfiguration()
         };
 
@@ -78,7 +78,7 @@ public class SynchronizerServiceTests
         {
             ProjectName = "Test project",
             NotifyIfMonitoringReturnedEmptyMessage = true,
-            MonitoringConfiguration = new MonitoringConfiguration(),
+            AppMonitoringConfiguration = new AppMonitoringConfiguration(),
             TelegramChatConfiguration = new TelegramChatConfiguration()
         };
 
@@ -99,7 +99,7 @@ public class SynchronizerServiceTests
         {
             ProjectName = "Test project",
             NotifyIfMonitoringReturnedEmptyMessage = false,
-            MonitoringConfiguration = new MonitoringConfiguration(),
+            AppMonitoringConfiguration = new AppMonitoringConfiguration(),
             TelegramChatConfiguration = new TelegramChatConfiguration()
         };
 
