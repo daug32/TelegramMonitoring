@@ -1,70 +1,74 @@
-﻿using Monitoring.Core.Builders;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Monitoring.Core.Builders;
 using Monitoring.Core.Configurations;
 using Monitoring.Core.Validators;
 
-namespace Monitoring.Core.Services.Implementation;
-
-internal class SynchronizerService : ISynchronizerService
+namespace Monitoring.Core.Services.Implementation
 {
-    private readonly IValidator<ProjectConfiguration> _projectConfigurationValidator;
-    private readonly IProjectMonitoringBuilder _projectMonitoringBuilder;
-    private readonly ITelegramHandlerBuilder _telegramHandlerBuilder;
-
-    public SynchronizerService(
-        IProjectMonitoringBuilder projectMonitoringBuilder,
-        ITelegramHandlerBuilder telegramHandlerBuilder,
-        IValidator<ProjectConfiguration> projectConfigurationValidator )
+    internal class SynchronizerService : ISynchronizerService
     {
-        _projectMonitoringBuilder = projectMonitoringBuilder;
-        _telegramHandlerBuilder = telegramHandlerBuilder;
-        _projectConfigurationValidator = projectConfigurationValidator;
-    }
+        private readonly IValidator<ProjectConfiguration> _projectConfigurationValidator;
+        private readonly IProjectMonitoringBuilder _projectMonitoringBuilder;
+        private readonly ITelegramHandlerBuilder _telegramHandlerBuilder;
 
-    public async Task NotifyAllProjectsAsync( IEnumerable<ProjectConfiguration> projects )
-    {
-        foreach ( ProjectConfiguration project in projects )
+        public SynchronizerService(
+            IProjectMonitoringBuilder projectMonitoringBuilder,
+            ITelegramHandlerBuilder telegramHandlerBuilder,
+            IValidator<ProjectConfiguration> projectConfigurationValidator )
         {
-            await NotifySingleProjectAsync( project );
-        }
-    }
-
-    public async Task NotifySingleProjectAsync( ProjectConfiguration project )
-    {
-        _projectConfigurationValidator.ValidateOrThrow( project );
-
-        ITelegramHandler telegramHandler = _telegramHandlerBuilder.Build(
-            project.TelegramBotConfiguration,
-            project.TelegramChatConfiguration );
-
-        string message;
-        try
-        {
-            message = await _projectMonitoringBuilder
-                .Build( project.MonitoringConfiguration )
-                .GetMessageFromProjectAsync();
-        }
-        catch ( HttpRequestException )
-        {
-            await telegramHandler.SendMessageAsync( BuildRequestErrorMessage( project.ProjectName ) );
-            return;
+            _projectMonitoringBuilder = projectMonitoringBuilder;
+            _telegramHandlerBuilder = telegramHandlerBuilder;
+            _projectConfigurationValidator = projectConfigurationValidator;
         }
 
-        if ( string.IsNullOrWhiteSpace( message )
-            && !project.NotifyIfMonitoringReturnedEmptyMessage )
+        public async Task NotifyAllProjectsAsync( IEnumerable<ProjectConfiguration> projects )
         {
-            return;
+            foreach ( ProjectConfiguration project in projects )
+            {
+                await NotifySingleProjectAsync( project );
+            }
         }
 
-        await telegramHandler.SendMessageAsync( BuildMessage( project.ProjectName, message ) );
-    }
+        public async Task NotifySingleProjectAsync( ProjectConfiguration project )
+        {
+            _projectConfigurationValidator.ValidateOrThrow( project );
 
-    private static string BuildMessage( string projectName, string message )
-    {
-        return $"Application: \"{projectName}\". Message:\n{message}";
-    }
+            ITelegramHandler telegramHandler = _telegramHandlerBuilder.Build(
+                project.TelegramBotConfiguration,
+                project.TelegramChatConfiguration );
 
-    private static string BuildRequestErrorMessage( string projectName )
-    {
-        return $"Application: \"{projectName}\". Couldn't get message from application.";
+            string message;
+            try
+            {
+                message = await _projectMonitoringBuilder
+                    .Build( project.MonitoringConfiguration )
+                    .GetMessageFromProjectAsync();
+            }
+            catch ( HttpRequestException )
+            {
+                await telegramHandler.SendMessageAsync( BuildRequestErrorMessage( project.ProjectName ) );
+                return;
+            }
+
+            if ( string.IsNullOrWhiteSpace( message )
+                 && !project.NotifyIfMonitoringReturnedEmptyMessage )
+            {
+                return;
+            }
+
+            await telegramHandler.SendMessageAsync( BuildMessage( project.ProjectName, message ) );
+        }
+
+        private static string BuildMessage( string projectName, string message )
+        {
+            return $"Application: \"{projectName}\". Message:\n{message}";
+        }
+
+        private static string BuildRequestErrorMessage( string projectName )
+        {
+            return $"Application: \"{projectName}\". Couldn't get message from application.";
+        }
     }
 }

@@ -1,6 +1,7 @@
-﻿namespace Monitoring.Core.Configurations;
-
-public class TelegramChatConfiguration
+﻿namespace Monitoring.Core.Configurations
 {
-    public long ChatId { get; set; }
+    public class TelegramChatConfiguration
+    {
+        public long ChatId { get; set; }
+    }
 }

@@ -1,6 +1,9 @@
-﻿namespace Monitoring.Core.Services;
+﻿using System.Threading.Tasks;
 
-public interface ITelegramHandler
+namespace Monitoring.Core.Services
 {
-    Task SendMessageAsync( string message );
+    public interface ITelegramHandler
+    {
+        Task SendMessageAsync( string message );
+    }
 }

@@ -1,35 +1,37 @@
+using System;
 using Monitoring.Core.Configurations;
 
-namespace Monitoring.Core.Validators;
-
-public class ProjectConfigurationValidator : IValidator<ProjectConfiguration>
+namespace Monitoring.Core.Validators
 {
-    private readonly IValidator<MonitoringConfiguration> _monitoringValidator;
-    private readonly IValidator<TelegramBotConfiguration> _botValidator;
-
-    public ProjectConfigurationValidator( 
-        IValidator<MonitoringConfiguration> monitoringValidator, 
-        IValidator<TelegramBotConfiguration> botValidator )
+    public class ProjectConfigurationValidator : IValidator<ProjectConfiguration>
     {
-        _monitoringValidator = monitoringValidator;
-        _botValidator = botValidator;
-    }
+        private readonly IValidator<MonitoringConfiguration> _monitoringValidator;
+        private readonly IValidator<TelegramBotConfiguration> _botValidator;
 
-    public void ValidateOrThrow( ProjectConfiguration projectConfiguration )
-    {
-        if ( projectConfiguration == null )
+        public ProjectConfigurationValidator(
+            IValidator<MonitoringConfiguration> monitoringValidator,
+            IValidator<TelegramBotConfiguration> botValidator )
         {
-            throw new ArgumentNullException( nameof( projectConfiguration ) );
+            _monitoringValidator = monitoringValidator;
+            _botValidator = botValidator;
         }
-        
-        if ( String.IsNullOrWhiteSpace( projectConfiguration.ProjectName ) )
+
+        public void ValidateOrThrow( ProjectConfiguration projectConfiguration )
         {
-            throw new ArgumentNullException(
-                nameof( projectConfiguration.ProjectName ),
-                "Project name can't be null or empty" );
+            if ( projectConfiguration == null )
+            {
+                throw new ArgumentNullException( nameof( projectConfiguration ) );
+            }
+
+            if ( String.IsNullOrWhiteSpace( projectConfiguration.ProjectName ) )
+            {
+                throw new ArgumentNullException(
+                    nameof( projectConfiguration.ProjectName ),
+                    "Project name can't be null or empty" );
+            }
+
+            _botValidator.ValidateOrThrow( projectConfiguration.TelegramBotConfiguration );
+            _monitoringValidator.ValidateOrThrow( projectConfiguration.MonitoringConfiguration );
         }
-        
-        _botValidator.ValidateOrThrow( projectConfiguration.TelegramBotConfiguration );
-        _monitoringValidator.ValidateOrThrow( projectConfiguration.MonitoringConfiguration );
     }
 }

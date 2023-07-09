@@ -1,6 +1,7 @@
-﻿namespace Monitoring.Core.Configurations;
-
-public class TelegramBotConfiguration
+﻿namespace Monitoring.Core.Configurations
 {
-    public string ApiKey { get; set; }
+    public class TelegramBotConfiguration
+    {
+        public string ApiKey { get; set; }
+    }
 }

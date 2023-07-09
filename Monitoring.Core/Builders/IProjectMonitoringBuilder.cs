@@ -1,9 +1,10 @@
 ﻿using Monitoring.Core.Configurations;
 using Monitoring.Core.Services;
 
-namespace Monitoring.Core.Builders;
-
-public interface IProjectMonitoringBuilder
+namespace Monitoring.Core.Builders
 {
-    IProjectMonitoring Build( MonitoringConfiguration configuration );
+    public interface IProjectMonitoringBuilder
+    {
+        IProjectMonitoring Build( MonitoringConfiguration configuration );
+    }
 }

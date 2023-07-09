@@ -1,31 +1,36 @@
-﻿using Monitoring.Core.Configurations;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
+using Monitoring.Core.Configurations;
 using Telegram.Bot;
 
-namespace Monitoring.Core.Services.Implementation;
-
-internal class TelegramHandler : ITelegramHandler
+namespace Monitoring.Core.Services.Implementation
 {
-    private const int MaxMessageSize = 4096;
-    private readonly TelegramBotClient _telegramClient;
-    private readonly TelegramChatConfiguration _chatConfiguration;
-
-    public TelegramHandler(
-        string botApiKey,
-        TelegramChatConfiguration chatConfiguration,
-        HttpClient httpClient )
+    internal class TelegramHandler : ITelegramHandler
     {
-        _chatConfiguration = chatConfiguration;
-        _telegramClient = new TelegramBotClient( botApiKey, httpClient );
-    }
+        private const int MaxMessageSize = 4096;
+        private readonly TelegramBotClient _telegramClient;
+        private readonly TelegramChatConfiguration _chatConfiguration;
 
-    public async Task SendMessageAsync( string message )
-    {
-        if ( message.Length > MaxMessageSize )
+        public TelegramHandler(
+            string botApiKey,
+            TelegramChatConfiguration chatConfiguration,
+            HttpClient httpClient )
         {
-            await _telegramClient.SendTextMessageAsync( _chatConfiguration.ChatId, message[..MaxMessageSize] );
-            return;
+            _chatConfiguration = chatConfiguration;
+            _telegramClient = new TelegramBotClient( botApiKey, httpClient );
         }
 
-        await _telegramClient.SendTextMessageAsync( _chatConfiguration.ChatId, message );
+        public async Task SendMessageAsync( string message )
+        {
+            if ( message.Length > MaxMessageSize )
+            {
+                await _telegramClient.SendTextMessageAsync(
+                    _chatConfiguration.ChatId,
+                    message.Substring( 0, MaxMessageSize ) );
+                return;
+            }
+
+            await _telegramClient.SendTextMessageAsync( _chatConfiguration.ChatId, message );
+        }
     }
 }

@@ -1,22 +1,25 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Net.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Monitoring.Core.Configurations;
 using Monitoring.Core.Services;
 using Monitoring.Core.Services.Implementation;
 
-namespace Monitoring.Core.Builders.Implementation;
-
-internal class ProjectMonitoringBuilder : IProjectMonitoringBuilder
+namespace Monitoring.Core.Builders.Implementation
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public ProjectMonitoringBuilder( IServiceProvider serviceProvider )
+    internal class ProjectMonitoringBuilder : IProjectMonitoringBuilder
     {
-        _serviceProvider = serviceProvider;
-    }
+        private readonly IServiceProvider _serviceProvider;
 
-    public IProjectMonitoring Build( MonitoringConfiguration configuration )
-    {
-        var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
-        return new ProjectMonitoring( httpClient, configuration );
+        public ProjectMonitoringBuilder( IServiceProvider serviceProvider )
+        {
+            _serviceProvider = serviceProvider;
+        }
+
+        public IProjectMonitoring Build( MonitoringConfiguration configuration )
+        {
+            var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
+            return new ProjectMonitoring( httpClient, configuration );
+        }
     }
 }

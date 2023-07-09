@@ -1,21 +1,23 @@
+using System;
 using Monitoring.Core.Configurations;
 
-namespace Monitoring.Core.Validators;
-
-public class TelegramBotConfigurationValidator : IValidator<TelegramBotConfiguration>
+namespace Monitoring.Core.Validators
 {
-    public void ValidateOrThrow( TelegramBotConfiguration botConfiguration )
+    public class TelegramBotConfigurationValidator : IValidator<TelegramBotConfiguration>
     {
-        if ( botConfiguration == null )
+        public void ValidateOrThrow( TelegramBotConfiguration botConfiguration )
         {
-            throw new ArgumentNullException( nameof( botConfiguration ) );
-        }
-        
-        if ( String.IsNullOrWhiteSpace( botConfiguration.ApiKey ) )
-        {
-            throw new ArgumentNullException(
-                nameof( botConfiguration.ApiKey ),
-                "Bot api key can't be null or empty" );
+            if ( botConfiguration == null )
+            {
+                throw new ArgumentNullException( nameof( botConfiguration ) );
+            }
+
+            if ( String.IsNullOrWhiteSpace( botConfiguration.ApiKey ) )
+            {
+                throw new ArgumentNullException(
+                    nameof( botConfiguration.ApiKey ),
+                    "Bot api key can't be null or empty" );
+            }
         }
     }
 }

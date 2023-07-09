@@ -1,28 +1,31 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Net.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Monitoring.Core.Configurations;
 using Monitoring.Core.Services;
 using Monitoring.Core.Services.Implementation;
 
-namespace Monitoring.Core.Builders.Implementation;
-
-internal class TelegramHandlerBuilder : ITelegramHandlerBuilder
+namespace Monitoring.Core.Builders.Implementation
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public TelegramHandlerBuilder( IServiceProvider serviceProvider )
+    internal class TelegramHandlerBuilder : ITelegramHandlerBuilder
     {
-        _serviceProvider = serviceProvider;
-    }
+        private readonly IServiceProvider _serviceProvider;
 
-    public ITelegramHandler Build(
-        TelegramBotConfiguration botConfiguration,
-        TelegramChatConfiguration chatConfiguration )
-    {
-        var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
-        
-        return new TelegramHandler(
-            botConfiguration.ApiKey,
-            chatConfiguration,
-            httpClient );
+        public TelegramHandlerBuilder( IServiceProvider serviceProvider )
+        {
+            _serviceProvider = serviceProvider;
+        }
+
+        public ITelegramHandler Build(
+            TelegramBotConfiguration botConfiguration,
+            TelegramChatConfiguration chatConfiguration )
+        {
+            var httpClient = _serviceProvider.GetRequiredService<HttpClient>();
+
+            return new TelegramHandler(
+                botConfiguration.ApiKey,
+                chatConfiguration,
+                httpClient );
+        }
     }
 }

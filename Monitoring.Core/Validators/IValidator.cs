@@ -1,7 +1,8 @@
-namespace Monitoring.Core.Validators;
-
-public interface IValidator<T>
-    where T : class
+namespace Monitoring.Core.Validators
 {
-    void ValidateOrThrow( T entity );
+    public interface IValidator<T>
+        where T : class
+    {
+        void ValidateOrThrow( T entity );
+    }
 }

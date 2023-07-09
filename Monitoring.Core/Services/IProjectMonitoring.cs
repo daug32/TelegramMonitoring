@@ -1,6 +1,9 @@
-﻿namespace Monitoring.Core.Services;
+﻿using System.Threading.Tasks;
 
-public interface IProjectMonitoring
+namespace Monitoring.Core.Services
 {
-    Task<string> GetMessageFromProjectAsync();
+    public interface IProjectMonitoring
+    {
+        Task<string> GetMessageFromProjectAsync();
+    }
 }

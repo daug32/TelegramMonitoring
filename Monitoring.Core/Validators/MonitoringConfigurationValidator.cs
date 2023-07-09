@@ -1,21 +1,23 @@
+using System;
 using Monitoring.Core.Configurations;
 
-namespace Monitoring.Core.Validators;
-
-public class MonitoringConfigurationValidator : IValidator<MonitoringConfiguration>
+namespace Monitoring.Core.Validators
 {
-    public void ValidateOrThrow( MonitoringConfiguration monitoringConfiguration )
+    public class MonitoringConfigurationValidator : IValidator<MonitoringConfiguration>
     {
-        if ( monitoringConfiguration == null )
+        public void ValidateOrThrow( MonitoringConfiguration monitoringConfiguration )
         {
-            throw new ArgumentNullException( nameof( monitoringConfiguration ) );
-        }
-        
-        if ( String.IsNullOrWhiteSpace( monitoringConfiguration.Url ) )
-        {
-            throw new ArgumentNullException(
-                nameof( monitoringConfiguration.Url ),
-                "Monitoring URL can't be null or empty" );
+            if ( monitoringConfiguration == null )
+            {
+                throw new ArgumentNullException( nameof( monitoringConfiguration ) );
+            }
+
+            if ( String.IsNullOrWhiteSpace( monitoringConfiguration.Url ) )
+            {
+                throw new ArgumentNullException(
+                    nameof( monitoringConfiguration.Url ),
+                    "Monitoring URL can't be null or empty" );
+            }
         }
     }
 }

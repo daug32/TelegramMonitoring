@@ -1,39 +1,40 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Monitoring.Core.Configurations;
 
-[assembly: InternalsVisibleTo( "Monitoring.Tests" )]
-
-namespace Monitoring.Core.Services.Implementation;
-
-internal class ProjectMonitoring : IProjectMonitoring
+namespace Monitoring.Core.Services.Implementation
 {
-    private readonly MonitoringConfiguration _configuration;
-    private readonly HttpClient _httpClient;
-
-    public ProjectMonitoring(
-        HttpClient httpClient,
-        MonitoringConfiguration configuration )
+    internal class ProjectMonitoring : IProjectMonitoring
     {
-        _httpClient = httpClient;
-        _configuration = configuration;
-    }
+        private readonly MonitoringConfiguration _configuration;
+        private readonly HttpClient _httpClient;
 
-    public async Task<string> GetMessageFromProjectAsync()
-    {
-        var request = new HttpRequestMessage( HttpMethod.Get, _configuration.Url );
-        if ( !String.IsNullOrWhiteSpace( _configuration.AuthenticationTokenHeader ) )
+        public ProjectMonitoring(
+            HttpClient httpClient,
+            MonitoringConfiguration configuration )
         {
-            request.Headers.Add( _configuration.AuthenticationTokenHeader, _configuration.AuthenticationToken );
+            _httpClient = httpClient;
+            _configuration = configuration;
         }
 
-        HttpResponseMessage response = await _httpClient.SendAsync( request );
-        string result = await response.Content.ReadAsStringAsync();
-        if ( !response.IsSuccessStatusCode )
+        public async Task<string> GetMessageFromProjectAsync()
         {
-            throw new HttpRequestException(
-                $"Url: {_configuration.Url}\nStatusCode: {response.StatusCode}\nResult: {result}" );
-        }
+            var request = new HttpRequestMessage( HttpMethod.Get, _configuration.Url );
+            if ( !String.IsNullOrWhiteSpace( _configuration.AuthenticationTokenHeader ) )
+            {
+                request.Headers.Add( _configuration.AuthenticationTokenHeader, _configuration.AuthenticationToken );
+            }
 
-        return result;
+            HttpResponseMessage response = await _httpClient.SendAsync( request );
+            string result = await response.Content.ReadAsStringAsync();
+            if ( !response.IsSuccessStatusCode )
+            {
+                throw new HttpRequestException(
+                    $"Url: {_configuration.Url}\nStatusCode: {response.StatusCode}\nResult: {result}" );
+            }
+
+            return result;
+        }
     }
 }
