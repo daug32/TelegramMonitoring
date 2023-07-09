@@ -7,11 +7,16 @@ namespace Monitoring.Core
 {
     public interface IProjectNotificator
     {
+        Task NotifyAllProjectsAsync( IEnumerable<ProjectConfiguration> projects );
+        
         Task NotifyAllProjectsAsync(
             IEnumerable<ProjectConfiguration> projects, 
-            CancellationToken? cancellationToken = null );
+            CancellationToken cancellationToken );
+        
+        Task NotifyProjectAsync( ProjectConfiguration project );
+
         Task NotifyProjectAsync( 
-            ProjectConfiguration project,
-            CancellationToken? cancellationToken = null );
+            ProjectConfiguration project, 
+            CancellationToken cancellationToken );
     }
 }

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Monitoring.Core.Configurations;
 using Monitoring.Core.Implementation.Builders;
+using Monitoring.Core.Implementation.Utils;
 using Monitoring.Core.Implementation.Validators;
 
 namespace Monitoring.Core.Implementation.Services
@@ -25,39 +26,39 @@ namespace Monitoring.Core.Implementation.Services
             _projectConfigurationValidator = projectConfigurationValidator;
         }
 
+        public Task NotifyAllProjectsAsync( IEnumerable<ProjectConfiguration> projects )
+        {
+            return NotifyAllProjectsAsync( projects, CancellationToken.None );
+        }
+
         public Task NotifyAllProjectsAsync(
             IEnumerable<ProjectConfiguration> projects,
-            CancellationToken? cancellationToken = null )
+            CancellationToken cancellationToken )
         {
-            if ( cancellationToken == null )
-            {
-                cancellationToken = CancellationToken.None;
-            }
-
             Task[] tasks = projects
                 .Select( project => Task.Run(
                 () =>
                 {
-                    Task notificationTask = NotifyProjectAsync( project, cancellationToken.Value );
-                    Task waitTask = Task.Delay( project.Delay, cancellationToken.Value );
+                    Task notificationTask = NotifyProjectAsync( project, cancellationToken );
+                    Task waitTask = Task.Delay( project.Delay, cancellationToken );
 
                     return Task.WhenAll( notificationTask, waitTask );
                 },
-                cancellationToken.Value ) )
+                cancellationToken ) )
                 .ToArray(); // Task.WhenAll works more effectively with arrays 
 
             return Task.WhenAll( tasks );
         }
 
+        public Task NotifyProjectAsync( ProjectConfiguration project )
+        {
+            return NotifyProjectAsync( project, CancellationToken.None );
+        }
+
         public async Task NotifyProjectAsync( 
             ProjectConfiguration project, 
-            CancellationToken? cancellationToken = null )
+            CancellationToken cancellationToken )
         {
-            if ( cancellationToken == null )
-            {
-                cancellationToken = CancellationToken.None;
-            }
-            
             _projectConfigurationValidator.ValidateOrThrow( project );
 
             ITelegramHandler telegramHandler = _telegramHandlerBuilder.Build(
@@ -69,37 +70,26 @@ namespace Monitoring.Core.Implementation.Services
             {
                 message = await _projectMonitoringBuilder
                     .Build( project.AppMonitoringConfiguration )
-                    .GetMessageFromProjectAsync( cancellationToken.Value );
+                    .GetMessageFromProjectAsync( cancellationToken );
             }
             catch ( HttpRequestException ex )
             {
-                string errorMessage = BuildRequestErrorMessage(
+                string errorMessage = MessageBuilder.BuildRequestErrorMessage(
                     project.ProjectName,
                     ex.Message );
-                await telegramHandler.SendMessageAsync( errorMessage, cancellationToken.Value );
+                await telegramHandler.SendMessageAsync( errorMessage, cancellationToken );
                 return;
             }
 
-            if ( string.IsNullOrWhiteSpace( message )
-                 && !project.NotifyIfMonitoringReturnedEmptyMessage )
+            if ( string.IsNullOrWhiteSpace( message ) &&
+                 !project.NotifyIfMonitoringReturnedEmptyMessage )
             {
                 return;
             }
 
             await telegramHandler.SendMessageAsync(
-                BuildMessage( project.ProjectName, message ),
-                cancellationToken.Value );
-        }
-
-        private static string BuildMessage( string projectName, string message )
-        {
-            return $"Application: \"{projectName}\".\nMessage: {message}";
-        }
-
-        private static string BuildRequestErrorMessage( string projectName, string exceptionMessage )
-        {
-            return
-                $"Application: \"{projectName}\". Couldn't get message from application.\nMessage: {exceptionMessage}";
+                MessageBuilder.BuildMessage( project.ProjectName, message ),
+                cancellationToken );
         }
     }
 }
