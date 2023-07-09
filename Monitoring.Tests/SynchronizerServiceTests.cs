@@ -1,8 +1,7 @@
-﻿using Monitoring.Core.Builders;
-using Monitoring.Core.Configurations;
-using Monitoring.Core.Services;
-using Monitoring.Core.Services.Implementation;
-using Monitoring.Core.Validators;
+﻿using Monitoring.Core.Configurations;
+using Monitoring.Core.Implementation.Builders;
+using Monitoring.Core.Implementation.Services;
+using Monitoring.Core.Implementation.Validators;
 using Moq;
 using NUnit.Framework;
 

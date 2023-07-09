@@ -1,7 +1,7 @@
 using System;
 using Monitoring.Core.Configurations;
 
-namespace Monitoring.Core.Validators
+namespace Monitoring.Core.Implementation.Validators
 {
     public class MonitoringConfigurationValidator : IValidator<AppMonitoringConfiguration>
     {

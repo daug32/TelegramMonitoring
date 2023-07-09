@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Monitoring.Core.Configurations;
 
-namespace Monitoring.Core.Services
+namespace Monitoring.Core
 {
     public interface ISynchronizerService
     {

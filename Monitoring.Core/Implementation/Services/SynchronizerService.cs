@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Monitoring.Core.Builders;
 using Monitoring.Core.Configurations;
-using Monitoring.Core.Validators;
+using Monitoring.Core.Implementation.Builders;
+using Monitoring.Core.Implementation.Validators;
 
-namespace Monitoring.Core.Services.Implementation
+namespace Monitoring.Core.Implementation.Services
 {
     internal class SynchronizerService : ISynchronizerService
     {

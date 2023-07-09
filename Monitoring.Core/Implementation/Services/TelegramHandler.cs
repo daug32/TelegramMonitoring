@@ -3,8 +3,13 @@ using System.Threading.Tasks;
 using Monitoring.Core.Configurations;
 using Telegram.Bot;
 
-namespace Monitoring.Core.Services.Implementation
+namespace Monitoring.Core.Implementation.Services
 {
+    internal interface ITelegramHandler
+    {
+        Task SendMessageAsync( string message );
+    }
+    
     internal class TelegramHandler : ITelegramHandler
     {
         private const int MaxMessageSize = 4096;

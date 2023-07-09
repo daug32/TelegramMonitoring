@@ -1,16 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Monitoring.Core.Builders;
-using Monitoring.Core.Builders.Implementation;
 using Monitoring.Core.Configurations;
-using Monitoring.Core.Services;
-using Monitoring.Core.Services.Implementation;
-using Monitoring.Core.Validators;
+using Monitoring.Core.Implementation.Builders;
+using Monitoring.Core.Implementation.Services;
+using Monitoring.Core.Implementation.Validators;
 
 namespace Monitoring.Core
 {
-    public static class ConfigureMonitoringDependenciesExtension
+    public static class MonitoringDependencyConfiguration
     {
-        public static IServiceCollection AddMonitoringDependencies( this IServiceCollection services )
+        public static IServiceCollection AddMonitoring( this IServiceCollection services )
         {
             // Services
             services.AddScoped<ISynchronizerService, SynchronizerService>();

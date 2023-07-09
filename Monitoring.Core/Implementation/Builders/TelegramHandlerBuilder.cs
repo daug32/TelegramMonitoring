@@ -2,11 +2,17 @@
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Monitoring.Core.Configurations;
-using Monitoring.Core.Services;
-using Monitoring.Core.Services.Implementation;
+using Monitoring.Core.Implementation.Services;
 
-namespace Monitoring.Core.Builders.Implementation
+namespace Monitoring.Core.Implementation.Builders
 {
+    internal interface ITelegramHandlerBuilder
+    {
+        ITelegramHandler Build(
+            TelegramBotConfiguration botConfiguration,
+            TelegramChatConfiguration chatConfiguration );
+    }
+    
     internal class TelegramHandlerBuilder : ITelegramHandlerBuilder
     {
         private readonly IServiceProvider _serviceProvider;

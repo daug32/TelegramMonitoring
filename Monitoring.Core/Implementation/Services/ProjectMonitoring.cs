@@ -1,10 +1,15 @@
-using Monitoring.Core.Configurations;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Monitoring.Core.Configurations;
 
-namespace Monitoring.Core.Services.Implementation
+namespace Monitoring.Core.Implementation.Services
 {
+    internal interface IProjectMonitoring
+    {
+        Task<string> GetMessageFromProjectAsync();
+    }
+    
     internal class ProjectMonitoring : IProjectMonitoring
     {
         private readonly AppMonitoringConfiguration _configuration;

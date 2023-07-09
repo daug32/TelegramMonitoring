@@ -1,4 +1,4 @@
-namespace Monitoring.Core.Validators
+namespace Monitoring.Core.Implementation.Validators
 {
     public interface IValidator<T>
         where T : class

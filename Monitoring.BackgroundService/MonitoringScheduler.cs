@@ -1,5 +1,5 @@
-﻿using Monitoring.Core.Configurations;
-using Monitoring.Core.Services;
+﻿using Monitoring.Core;
+using Monitoring.Core.Configurations;
 
 namespace Monitoring.BackgroundService;
 
@@ -24,7 +24,7 @@ public class MonitoringScheduler : Microsoft.Extensions.Hosting.BackgroundServic
         // We need to get ISynchronizerService in code
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
         _synchronizerService = scope.ServiceProvider.GetRequiredService<ISynchronizerService>();
-            
+
         while ( !cancellationToken.IsCancellationRequested )
         {
             await NotifyProjectsAsync();

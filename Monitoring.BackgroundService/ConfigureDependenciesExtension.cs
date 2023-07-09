@@ -7,7 +7,7 @@ public static class ConfigureDependenciesExtension
     public static IServiceCollection ConfigureDependencies(
         this IServiceCollection services )
     {
-        services.AddMonitoringDependencies();        
+        services.AddMonitoring();        
         
         services.AddSingleton<HttpClient, HttpClient>();
 

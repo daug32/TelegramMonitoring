@@ -2,11 +2,15 @@
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Monitoring.Core.Configurations;
-using Monitoring.Core.Services;
-using Monitoring.Core.Services.Implementation;
+using Monitoring.Core.Implementation.Services;
 
-namespace Monitoring.Core.Builders.Implementation
+namespace Monitoring.Core.Implementation.Builders
 {
+    internal interface IProjectMonitoringBuilder
+    {
+        IProjectMonitoring Build( AppMonitoringConfiguration configuration );
+    }
+    
     internal class ProjectMonitoringBuilder : IProjectMonitoringBuilder
     {
         private readonly IServiceProvider _serviceProvider;
