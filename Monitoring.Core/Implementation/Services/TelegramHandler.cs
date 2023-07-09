@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Monitoring.Core.Configurations;
 using Telegram.Bot;
@@ -8,6 +9,7 @@ namespace Monitoring.Core.Implementation.Services
     internal interface ITelegramHandler
     {
         Task SendMessageAsync( string message );
+        Task SendMessageAsync( string message, CancellationToken cancellationToken );
     }
     
     internal class TelegramHandler : ITelegramHandler
@@ -25,17 +27,26 @@ namespace Monitoring.Core.Implementation.Services
             _telegramClient = new TelegramBotClient( botApiKey, httpClient );
         }
 
-        public async Task SendMessageAsync( string message )
+        public Task SendMessageAsync( string message )
+        {
+            return SendMessageAsync( message, CancellationToken.None );
+        }
+
+        public async Task SendMessageAsync( string message, CancellationToken cancellationToken )
         {
             if ( message.Length > MaxMessageSize )
             {
                 await _telegramClient.SendTextMessageAsync(
                     _chatConfiguration.ChatId,
-                    message.Substring( 0, MaxMessageSize ) );
+                    message.Substring( 0, MaxMessageSize ),
+                    cancellationToken: cancellationToken );
                 return;
             }
 
-            await _telegramClient.SendTextMessageAsync( _chatConfiguration.ChatId, message );
+            await _telegramClient.SendTextMessageAsync(
+                _chatConfiguration.ChatId,
+                message,
+                cancellationToken: cancellationToken );
         }
     }
 }

@@ -27,16 +27,17 @@ public class MonitoringScheduler : Microsoft.Extensions.Hosting.BackgroundServic
 
         while ( !cancellationToken.IsCancellationRequested )
         {
-            await NotifyProjectsAsync();
+            IEnumerable<ProjectConfiguration> configurations = GetProjectConfigurations();
+            await _projectNotificator.NotifyAllProjectsAsync( 
+                configurations,
+                cancellationToken );
         }
     }
 
-    private Task NotifyProjectsAsync()
+    private IEnumerable<ProjectConfiguration> GetProjectConfigurations()
     {
-        var projectConfigurations = _configuration
+        return _configuration
             .GetSection( "ProjectConfigurations" )
             .Get<List<ProjectConfiguration>>();
-
-        return _projectNotificator.NotifyAllProjectsAsync( projectConfigurations );
     }
 }
