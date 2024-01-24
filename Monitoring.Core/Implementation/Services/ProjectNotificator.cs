@@ -1,29 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Monitoring.Core.Configurations;
 using Monitoring.Core.Implementation.Builders;
 using Monitoring.Core.Implementation.Utils;
-using Monitoring.Core.Implementation.Validators;
 
 namespace Monitoring.Core.Implementation.Services
 {
     internal class ProjectNotificator : IProjectNotificator
     {
-        private readonly IValidator<ProjectConfiguration> _projectConfigurationValidator;
         private readonly IProjectMonitoringBuilder _projectMonitoringBuilder;
         private readonly ITelegramHandlerBuilder _telegramHandlerBuilder;
 
         public ProjectNotificator(
             IProjectMonitoringBuilder projectMonitoringBuilder,
-            ITelegramHandlerBuilder telegramHandlerBuilder,
-            IValidator<ProjectConfiguration> projectConfigurationValidator )
+            ITelegramHandlerBuilder telegramHandlerBuilder )
         {
             _projectMonitoringBuilder = projectMonitoringBuilder;
             _telegramHandlerBuilder = telegramHandlerBuilder;
-            _projectConfigurationValidator = projectConfigurationValidator;
         }
 
         public Task NotifyProjectAsync( ProjectConfiguration project )
@@ -35,7 +29,7 @@ namespace Monitoring.Core.Implementation.Services
             ProjectConfiguration project, 
             CancellationToken cancellationToken )
         {
-            _projectConfigurationValidator.ValidateOrThrow( project );
+            ProjectConfiguration.ValidateOrThrow( project );
 
             ITelegramHandler telegramHandler = _telegramHandlerBuilder.Build(
                 project.TelegramBotConfiguration,

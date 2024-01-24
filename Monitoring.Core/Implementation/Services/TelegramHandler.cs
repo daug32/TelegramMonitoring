@@ -8,8 +8,7 @@ namespace Monitoring.Core.Implementation.Services
 {
     internal interface ITelegramHandler
     {
-        Task SendMessageAsync( string message );
-        Task SendMessageAsync( string message, CancellationToken cancellationToken );
+        Task SendMessageAsync( string message, CancellationToken token = default );
     }
     
     internal class TelegramHandler : ITelegramHandler

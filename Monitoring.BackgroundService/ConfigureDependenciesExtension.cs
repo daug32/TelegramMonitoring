@@ -1,16 +1,16 @@
 ﻿using Monitoring.Core;
 
-namespace Monitoring.BackgroundService;
-
-public static class ConfigureDependenciesExtension
+namespace Monitoring.BackgroundService
 {
-    public static IServiceCollection ConfigureDependencies(
-        this IServiceCollection services )
+    public static class ConfigureDependenciesExtension
     {
-        services.AddMonitoring();        
-        
-        services.AddSingleton<HttpClient, HttpClient>();
+        public static IServiceCollection ConfigureDependencies(
+            this IServiceCollection services )
+        {
+            services.AddMonitoring();
+            services.AddSingleton<HttpClient>();
 
-        return services;
+            return services;
+        }
     }
 }

@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Monitoring.Core.Configurations;
 using Monitoring.Core.Implementation.Models;
 
@@ -9,20 +12,24 @@ namespace Monitoring.Core.Implementation.Services
     internal class ProjectNotificatorScheduler : IProjectNotificatorScheduler
     {
         private readonly IProjectNotificator _projectNotificator;
+        private readonly ILogger _logger;  
 
-        public ProjectNotificatorScheduler( IProjectNotificator projectNotificator )
+        public ProjectNotificatorScheduler( 
+            IProjectNotificator projectNotificator,
+            ILogger<ProjectNotificatorScheduler> logger )
         {
             _projectNotificator = projectNotificator;
+            _logger = logger;
         }
 
         public async Task ScheduleNotificationAsync(
             IEnumerable<ProjectConfiguration> projects,
-            CancellationToken cancellationToken )
+            CancellationToken token )
         {
             var tasks = new List<Task>();
             var projectsQueue = new SafeConcurrentQueue<ProjectConfiguration>( projects );
 
-            while ( !cancellationToken.IsCancellationRequested )
+            while ( !token.IsCancellationRequested )
             {
                 while ( !projectsQueue.IsEmpty )
                 {
@@ -31,34 +38,38 @@ namespace Monitoring.Core.Implementation.Services
                     {
                         continue;
                     }
-
-                    Task task = BuildNotificationTask( project, cancellationToken )
-                        .ContinueWith( _ => projectsQueue.Push( project ), cancellationToken );
+                    
+                    Task task = Task.Run( async () =>
+                        {
+                            try
+                            {
+                                Task notificationTask = _projectNotificator.NotifyProjectAsync( project, token );
+                                Task waitTask = Task.Delay( project.Delay, token );
+                                await Task.WhenAll( notificationTask, waitTask );
+                            }
+                            catch ( Exception ex )
+                            {
+                                _logger.LogCritical( ex, $"Project: {project.ProjectName}" );
+                                throw;
+                            }
+                            finally
+                            {
+                                projectsQueue.Push( project );
+                            }
+                        },
+                        token );
 
                     tasks.Add( task );
+                }
+
+                if ( !tasks.Any() )
+                {
+                    continue;
                 }
 
                 Task completedTask = await Task.WhenAny( tasks );
                 tasks.Remove( completedTask );
             }
-        }
-
-        private Task BuildNotificationTask(
-            ProjectConfiguration project,
-            CancellationToken cancellationToken )
-        {
-            Task task = Task
-                .Run(
-                    () =>
-                    {
-                        Task notificationTask = _projectNotificator.NotifyProjectAsync( project, cancellationToken );
-                        Task waitTask = Task.Delay( project.Delay, cancellationToken );
-
-                        return Task.WhenAll( notificationTask, waitTask );
-                    },
-                    cancellationToken );
-
-            return task;
         }
     }
 }

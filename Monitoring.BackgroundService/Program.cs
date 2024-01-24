@@ -1,21 +1,22 @@
-namespace Monitoring.BackgroundService;
-
-public class Program
+namespace Monitoring.BackgroundService
 {
-    public static void Main()
+    public class Program
     {
-        CreateHostBuilder().Build().Run();
-    }
+        public static void Main()
+        {
+            CreateHostBuilder().Build().Run();
+        }
 
-    private static IHostBuilder CreateHostBuilder()
-    {
-        return Host
-            .CreateDefaultBuilder()
-            .ConfigureServices( (hostContext, services) =>
-            {
-                services
-                    .ConfigureDependencies()
-                    .AddHostedService<MonitoringScheduler>();
-            } );
+        private static IHostBuilder CreateHostBuilder()
+        {
+            return Host
+                .CreateDefaultBuilder()
+                .ConfigureServices( ( _, services ) =>
+                {
+                    services
+                        .ConfigureDependencies()
+                        .AddHostedService<MonitoringScheduler>();
+                } );
+        }
     }
 }

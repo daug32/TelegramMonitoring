@@ -19,5 +19,23 @@ namespace Monitoring.Core.Configurations
         public TelegramChatConfiguration TelegramChatConfiguration { get; set; }
 
         public AppMonitoringConfiguration AppMonitoringConfiguration { get; set; }
+
+        public static void ValidateOrThrow( ProjectConfiguration config )
+        {
+            if ( config == null )
+            {
+                throw new ArgumentNullException( nameof( config ) );
+            }
+
+            if ( String.IsNullOrWhiteSpace( config.ProjectName ) )
+            {
+                throw new ArgumentNullException(
+                    nameof( config.ProjectName ),
+                    "Project name can't be null or empty" );
+            }
+            
+            AppMonitoringConfiguration.ValidateOrThrow( config.AppMonitoringConfiguration );
+            TelegramBotConfiguration.ValidateOrThrow( config.TelegramBotConfiguration );
+        }
     }
 }

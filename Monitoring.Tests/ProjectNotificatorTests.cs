@@ -1,113 +1,125 @@
 ﻿using Monitoring.Core.Configurations;
 using Monitoring.Core.Implementation.Builders;
 using Monitoring.Core.Implementation.Services;
-using Monitoring.Core.Implementation.Validators;
 using Moq;
 using NUnit.Framework;
 
-namespace Monitoring.Tests;
-
-public class ProjectNotificatorTests
+namespace Monitoring.Tests
 {
-    private string _monitoringMessage;
-    private string _sentMessage;
-    private ProjectNotificator _projectNotificator;
-
-    [SetUp]
-    public void SetUp()
+    public class ProjectNotificatorTests
     {
-        // ProjectMonitoringBuilder
-        var projectMonitoringMock = new Mock<IProjectMonitoring>();
-        projectMonitoringMock
-            .Setup( monitoring => monitoring.GetMessageFromProjectAsync() )
-            .ReturnsAsync( () => _monitoringMessage );
+        private FakeTelegramHandler _telegramHandler;
+        private FakeProjectMonitoring _projectMonitoring;
+        private ProjectNotificator _projectNotificator;
 
-        var projectMonitoringBuilderMock = new Mock<IProjectMonitoringBuilder>();
-        projectMonitoringBuilderMock
-            .Setup( builder => builder.Build( It.IsAny<AppMonitoringConfiguration>() ) )
-            .Returns( projectMonitoringMock.Object );
-
-        // TelegramHandlerBuilder
-        var telegramHandlerMock = new Mock<ITelegramHandler>();
-        telegramHandlerMock
-            .Setup( handler => handler.SendMessageAsync( It.IsAny<string>() ) )
-            .Returns( Task.Run( () => { } ) )
-            .Callback( ( string message ) => _sentMessage = message );
-
-        var telegramHandlerBuilderMoq = new Mock<ITelegramHandlerBuilder>();
-        telegramHandlerBuilderMoq
-            .Setup( builder => builder.Build(
-                It.IsAny<TelegramBotConfiguration>(),
-                It.IsAny<TelegramChatConfiguration>() ) )
-            .Returns( telegramHandlerMock.Object );
-
-        // ProjectNotificator
-        _projectNotificator = new ProjectNotificator(
-            projectMonitoringBuilderMock.Object,
-            telegramHandlerBuilderMoq.Object,
-            new Mock<IValidator<ProjectConfiguration>>().Object );
-    }
-
-    [Test]
-    public async Task NotifySingleProjectAsync_MonitoringReturnedNotEmptyMessage_MessageIsSentToTelegram()
-    {
-        // Arrange
-        var config = new ProjectConfiguration
+        [SetUp]
+        public void SetUp()
         {
-            ProjectName = "Test project",
-            AppMonitoringConfiguration = new AppMonitoringConfiguration(),
-            TelegramChatConfiguration = new TelegramChatConfiguration()
-        };
+            _telegramHandler = new FakeTelegramHandler();
+            _projectMonitoring = new FakeProjectMonitoring();
+            
+            var projectMonitoringBuilderMock = new Mock<IProjectMonitoringBuilder>();
+            projectMonitoringBuilderMock
+                .Setup( x => x.Build( It.IsAny<AppMonitoringConfiguration>() ) )
+                .Returns( () => _projectMonitoring );
+            
+            var telegramHandlerBuilderMoq = new Mock<ITelegramHandlerBuilder>();
+            telegramHandlerBuilderMoq
+                .Setup( x => x.Build( It.IsAny<TelegramBotConfiguration>(), It.IsAny<TelegramChatConfiguration>() ) )
+                .Returns( () => _telegramHandler );
+            
+            _projectNotificator = new ProjectNotificator(
+                projectMonitoringBuilderMock.Object,
+                telegramHandlerBuilderMoq.Object );
+        }
 
-        _monitoringMessage = "Success";
-
-        // Act
-        await _projectNotificator.NotifyProjectAsync( config );
-
-        // Assert
-        Assert.IsTrue( _sentMessage.Contains( config.ProjectName ) );
-        Assert.IsTrue( _sentMessage.Contains( _monitoringMessage ) );
-    }
-
-    [Test]
-    public async Task NotifySingleProjectAsync_MonitoringReturnedEmptyMessageAndProjectConfiguredToSendMessagesInThisCase_MessageIsSent()
-    {
-        // Arrange
-        var config = new ProjectConfiguration
+        [Test]
+        public async Task NotifySingleProjectAsync_MonitoringReturnedNotEmptyMessage_MessageIsSentToTelegram()
         {
-            ProjectName = "Test project",
-            NotifyIfMonitoringReturnedEmptyMessage = true,
-            AppMonitoringConfiguration = new AppMonitoringConfiguration(),
-            TelegramChatConfiguration = new TelegramChatConfiguration()
-        };
+            // Arrange
+            var config = new ProjectConfiguration
+            {
+                ProjectName = "Test project",
+                AppMonitoringConfiguration = new AppMonitoringConfiguration()
+                {
+                    Url = "http://test.com"
+                },
+                TelegramChatConfiguration = new TelegramChatConfiguration(),
+                TelegramBotConfiguration = new TelegramBotConfiguration()
+                {
+                    ApiKey = "apikey"
+                }
+            };
 
-        _monitoringMessage = "";
+            string messageFromMonitoring = "Success";
+            _projectMonitoring.MessageThatWillBeSent = messageFromMonitoring;
 
-        // Act
-        await _projectNotificator.NotifyProjectAsync( config );
+            // Act
+            await _projectNotificator.NotifyProjectAsync( config );
 
-        // Assert
-        Assert.IsFalse( String.IsNullOrEmpty( _sentMessage ) );
-    }
+            // Assert
+            string sentMessage = _telegramHandler.LastSentMessage;
+            
+            Assert.That( sentMessage.Contains( config.ProjectName ), Is.True );
+            Assert.That( sentMessage.Contains( messageFromMonitoring ), Is.True );
+        }
 
-    [Test]
-    public async Task NotifySingleProjectAsync_MonitoringReturnedEmptyMessageAndProjectConfiguredToNotSendMessagesInThisCase_NoMessageIsSent()
-    {
-        // Arrange
-        var config = new ProjectConfiguration
+        [Test]
+        public async Task NotifySingleProjectAsync_MonitoringReturnedEmptyMessageAndProjectConfiguredToSendMessagesInThisCase_MessageIsSent()
         {
-            ProjectName = "Test project",
-            NotifyIfMonitoringReturnedEmptyMessage = false,
-            AppMonitoringConfiguration = new AppMonitoringConfiguration(),
-            TelegramChatConfiguration = new TelegramChatConfiguration()
-        };
+            // Arrange
+            var config = new ProjectConfiguration
+            {
+                ProjectName = "Test project",
+                NotifyIfMonitoringReturnedEmptyMessage = true,
+                AppMonitoringConfiguration = new AppMonitoringConfiguration()
+                {
+                    Url = "http://test.com"
+                },
+                TelegramChatConfiguration = new TelegramChatConfiguration(),
+                TelegramBotConfiguration = new TelegramBotConfiguration()
+                {
+                    ApiKey = "apikey"
+                }
+            };
 
-        _monitoringMessage = "";
+            string messageFromMonitoring = "";
+            _projectMonitoring.MessageThatWillBeSent = messageFromMonitoring;
 
-        // Act
-        await _projectNotificator.NotifyProjectAsync( config );
+            // Act
+            await _projectNotificator.NotifyProjectAsync( config );
 
-        // Assert
-        Assert.IsTrue( String.IsNullOrEmpty( _sentMessage ) );
+            // Assert
+            Assert.That( String.IsNullOrEmpty( _telegramHandler.LastSentMessage ), Is.False );
+        }
+
+        [Test]
+        public async Task NotifySingleProjectAsync_MonitoringReturnedEmptyMessageAndProjectConfiguredToNotSendMessagesInThisCase_NoMessageIsSent()
+        {
+            // Arrange
+            var config = new ProjectConfiguration
+            {
+                ProjectName = "Test project",
+                NotifyIfMonitoringReturnedEmptyMessage = false,
+                AppMonitoringConfiguration = new AppMonitoringConfiguration()
+                {
+                    Url = "http://test.com"
+                },
+                TelegramChatConfiguration = new TelegramChatConfiguration(),
+                TelegramBotConfiguration = new TelegramBotConfiguration()
+                {
+                    ApiKey = "apikey"
+                }
+            };
+
+            string messageFromMonitoring = "";
+            _projectMonitoring.MessageThatWillBeSent = messageFromMonitoring;
+
+            // Act
+            await _projectNotificator.NotifyProjectAsync( config );
+
+            // Assert
+            Assert.That( String.IsNullOrEmpty( _telegramHandler.LastSentMessage ), Is.True );
+        }
     }
 }

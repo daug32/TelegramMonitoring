@@ -8,8 +8,7 @@ namespace Monitoring.Core.Implementation.Services
 {
     internal interface IProjectMonitoring
     {
-        Task<string> GetMessageFromProjectAsync();
-        Task<string> GetMessageFromProjectAsync( CancellationToken cancellationToken );
+        Task<string> GetMessageFromProjectAsync( CancellationToken token = default );
     }
     
     internal class ProjectMonitoring : IProjectMonitoring
@@ -30,7 +29,7 @@ namespace Monitoring.Core.Implementation.Services
             return GetMessageFromProjectAsync( CancellationToken.None );
         }
 
-        public async Task<string> GetMessageFromProjectAsync( CancellationToken cancellationToken )
+        public async Task<string> GetMessageFromProjectAsync( CancellationToken token )
         {
             var request = new HttpRequestMessage( HttpMethod.Get, _configuration.Url );
             if ( !String.IsNullOrWhiteSpace( _configuration.AuthenticationTokenHeader ) )
@@ -38,7 +37,7 @@ namespace Monitoring.Core.Implementation.Services
                 request.Headers.Add( _configuration.AuthenticationTokenHeader, _configuration.AuthenticationToken );
             }
 
-            HttpResponseMessage response = await _httpClient.SendAsync( request, cancellationToken );
+            HttpResponseMessage response = await _httpClient.SendAsync( request, token );
             string result = await response.Content.ReadAsStringAsync();
             if ( !response.IsSuccessStatusCode )
             {

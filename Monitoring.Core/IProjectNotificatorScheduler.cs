@@ -9,6 +9,6 @@ namespace Monitoring.Core
     {
         Task ScheduleNotificationAsync(
             IEnumerable<ProjectConfiguration> projects,
-            CancellationToken cancellationToken );
+            CancellationToken token );
     }
 }
