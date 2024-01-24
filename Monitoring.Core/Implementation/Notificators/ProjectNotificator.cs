@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Monitoring.Core.Configurations;
 using Monitoring.Core.Implementation.Monitorings;
 using Monitoring.Core.Implementation.Notificators.Utils;
@@ -12,23 +13,21 @@ namespace Monitoring.Core.Implementation.Notificators
     {
         private readonly IProjectMonitoringBuilder _projectMonitoringBuilder;
         private readonly ITelegramHandlerBuilder _telegramHandlerBuilder;
+        private readonly ILogger _logger;
 
         public ProjectNotificator(
             IProjectMonitoringBuilder projectMonitoringBuilder,
-            ITelegramHandlerBuilder telegramHandlerBuilder )
+            ITelegramHandlerBuilder telegramHandlerBuilder,
+            ILogger<ProjectNotificator> logger )
         {
             _projectMonitoringBuilder = projectMonitoringBuilder;
             _telegramHandlerBuilder = telegramHandlerBuilder;
-        }
-
-        public Task NotifyProjectAsync( ProjectConfiguration project )
-        {
-            return NotifyProjectAsync( project, CancellationToken.None );
+            _logger = logger;
         }
 
         public async Task NotifyProjectAsync( 
             ProjectConfiguration project, 
-            CancellationToken cancellationToken )
+            CancellationToken token = default )
         {
             ProjectConfiguration.ValidateOrThrow( project );
 
@@ -36,20 +35,18 @@ namespace Monitoring.Core.Implementation.Notificators
                 project.TelegramBotConfiguration,
                 project.TelegramChatConfiguration );
 
+            _logger.Log( LogLevel.Information, $"Asking for message. Project: {project.ProjectName}" );
+
             string message;
             try
             {
                 message = await _projectMonitoringBuilder
                     .Build( project.AppMonitoringConfiguration )
-                    .GetMessageFromProjectAsync( cancellationToken );
+                    .GetMessageFromProjectAsync( token );
             }
             catch ( HttpRequestException ex )
             {
-                string errorMessage = MessageBuilder.BuildRequestErrorMessage(
-                    project.ProjectName,
-                    ex.Message );
-                await telegramHandler.SendMessageAsync( errorMessage, cancellationToken );
-                return;
+                message = ex.Message;
             }
 
             if ( string.IsNullOrWhiteSpace( message ) &&
@@ -58,9 +55,12 @@ namespace Monitoring.Core.Implementation.Notificators
                 return;
             }
 
+            _logger.Log( LogLevel.Information, $"Sends a message. Project: {project.ProjectName}" );
             await telegramHandler.SendMessageAsync(
-                MessageBuilder.BuildMessage( project.ProjectName, message ),
-                cancellationToken );
+                MessageCreator.Create( 
+                    projectName: project.ProjectName, 
+                    message: message ),
+                token );
         }
     }
 }

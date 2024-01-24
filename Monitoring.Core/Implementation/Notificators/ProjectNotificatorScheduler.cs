@@ -43,6 +43,7 @@ namespace Monitoring.Core.Implementation.Notificators
                         {
                             try
                             {
+                                _logger.Log( LogLevel.Information, $"Notifying a project. Project: {project.ProjectName}" );
                                 Task notificationTask = _projectNotificator.NotifyProjectAsync( project, token );
                                 Task waitTask = Task.Delay( project.Delay, token );
                                 await Task.WhenAll( notificationTask, waitTask );

@@ -1,8 +1,8 @@
 ﻿namespace Monitoring.Core.Implementation.Notificators.Utils
 {
-    public static class MessageBuilder
+    public static class MessageCreator
     {
-        public static string BuildMessage( string projectName, string message )
+        public static string Create( string projectName, string message )
         {
             return $"Application: \"{projectName}\".\nMessage: {message}";
         }

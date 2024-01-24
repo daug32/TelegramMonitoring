@@ -1,4 +1,5 @@
-﻿using Monitoring.Core.Configurations;
+﻿using Microsoft.Extensions.Logging;
+using Monitoring.Core.Configurations;
 using Monitoring.Core.Implementation.Monitorings;
 using Monitoring.Core.Implementation.Notificators;
 using Monitoring.Core.Implementation.Telegram;
@@ -32,7 +33,8 @@ namespace Monitoring.Tests
             
             _projectNotificator = new ProjectNotificator(
                 projectMonitoringBuilderMock.Object,
-                telegramHandlerBuilderMoq.Object );
+                telegramHandlerBuilderMoq.Object,
+                new Mock<ILogger<ProjectNotificator>>().Object );
         }
 
         [Test]
