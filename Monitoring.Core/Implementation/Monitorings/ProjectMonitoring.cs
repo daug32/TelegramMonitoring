@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Monitoring.Core.Configurations;
 
-namespace Monitoring.Core.Implementation.Services
+namespace Monitoring.Core.Implementation.Monitorings
 {
     internal interface IProjectMonitoring
     {

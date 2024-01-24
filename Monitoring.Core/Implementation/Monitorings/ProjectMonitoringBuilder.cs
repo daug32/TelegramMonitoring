@@ -2,9 +2,8 @@
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Monitoring.Core.Configurations;
-using Monitoring.Core.Implementation.Services;
 
-namespace Monitoring.Core.Implementation.Builders
+namespace Monitoring.Core.Implementation.Monitorings
 {
     internal interface IProjectMonitoringBuilder
     {

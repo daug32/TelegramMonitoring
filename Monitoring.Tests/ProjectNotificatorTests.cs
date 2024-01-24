@@ -1,6 +1,7 @@
 ﻿using Monitoring.Core.Configurations;
-using Monitoring.Core.Implementation.Builders;
-using Monitoring.Core.Implementation.Services;
+using Monitoring.Core.Implementation.Monitorings;
+using Monitoring.Core.Implementation.Notificators;
+using Monitoring.Core.Implementation.Telegram;
 using Moq;
 using NUnit.Framework;
 
@@ -8,9 +9,10 @@ namespace Monitoring.Tests
 {
     public class ProjectNotificatorTests
     {
+        private ProjectNotificator _projectNotificator;
+
         private FakeTelegramHandler _telegramHandler;
         private FakeProjectMonitoring _projectMonitoring;
-        private ProjectNotificator _projectNotificator;
 
         [SetUp]
         public void SetUp()

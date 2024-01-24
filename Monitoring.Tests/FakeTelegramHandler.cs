@@ -1,4 +1,4 @@
-﻿using Monitoring.Core.Implementation.Services;
+﻿using Monitoring.Core.Implementation.Telegram;
 
 namespace Monitoring.Tests
 {

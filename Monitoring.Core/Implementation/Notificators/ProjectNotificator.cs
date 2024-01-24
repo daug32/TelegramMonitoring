@@ -2,10 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Monitoring.Core.Configurations;
-using Monitoring.Core.Implementation.Builders;
-using Monitoring.Core.Implementation.Utils;
+using Monitoring.Core.Implementation.Monitorings;
+using Monitoring.Core.Implementation.Notificators.Utils;
+using Monitoring.Core.Implementation.Telegram;
 
-namespace Monitoring.Core.Implementation.Services
+namespace Monitoring.Core.Implementation.Notificators
 {
     internal class ProjectNotificator : IProjectNotificator
     {

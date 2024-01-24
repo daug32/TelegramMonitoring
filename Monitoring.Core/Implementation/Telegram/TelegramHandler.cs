@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Monitoring.Core.Configurations;
 using Telegram.Bot;
 
-namespace Monitoring.Core.Implementation.Services
+namespace Monitoring.Core.Implementation.Telegram
 {
     internal interface ITelegramHandler
     {

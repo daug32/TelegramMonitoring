@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Monitoring.Core.Implementation.Builders;
-using Monitoring.Core.Implementation.Services;
+using Monitoring.Core.Implementation.Monitorings;
+using Monitoring.Core.Implementation.Notificators;
+using Monitoring.Core.Implementation.Telegram;
 
 namespace Monitoring.Core
 {

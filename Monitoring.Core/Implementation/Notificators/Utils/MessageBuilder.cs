@@ -1,4 +1,4 @@
-﻿namespace Monitoring.Core.Implementation.Utils
+﻿namespace Monitoring.Core.Implementation.Notificators.Utils
 {
     public static class MessageBuilder
     {

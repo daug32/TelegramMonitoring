@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Monitoring.Core.Implementation.Models
+namespace Monitoring.Core.Implementation.Notificators.Models
 {
     public class SafeConcurrentQueue<T>
         where T : class

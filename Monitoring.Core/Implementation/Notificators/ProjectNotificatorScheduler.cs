@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Monitoring.Core.Configurations;
-using Monitoring.Core.Implementation.Models;
+using Monitoring.Core.Implementation.Notificators.Models;
 
-namespace Monitoring.Core.Implementation.Services
+namespace Monitoring.Core.Implementation.Notificators
 {
     internal class ProjectNotificatorScheduler : IProjectNotificatorScheduler
     {
